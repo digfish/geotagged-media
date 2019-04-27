@@ -1,4 +1,4 @@
-#Geotagged Media
+# Geotagged Media
 - Contributors: digitalfisherman
 - Donate link: https://digfish.org/
 - Tags: maps osm openlayers geotag exif dashboard
