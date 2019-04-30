@@ -33,11 +33,11 @@ _My photos from my camera are surely geotagged, why they don't appear as such in
 
 #### Screenshots
 
-![Edit Media](assets/gtm_edit_media.jpg)
-![Attachment details](assets/gtm_edit_photo.jpg)
-![Media Library listing table](assets/gtm_media_library_list.jpg)
-![Map with popup](assets/gtm_osm_map_popup.jpg)
-![Map with markers](assets/gtm_osm_map_with_squares.jpg)
+![Edit Media](assets/screenshot-1.jpg)
+![Attachment details](assets/screenshot-2.jpg)
+![Media Library listing table](assets/screenshot-3.jpg)
+![Map with markers](assets/screenshot-4.jpg)
+![Map with popup](assets/screenshot-5.jpg)
 
 #### Changelog 
 

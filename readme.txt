@@ -37,11 +37,11 @@ By now, allows you to view the contents of composer.json, update the plugins tha
 
 == Screenshots ==
 
-1. gtm_edit_media.jpg
-2. gtm_edit_photo.jpg
-3. gtm_media_library_list.jpg
-4. gtm_osm_map_popup.jpg
-5. gtm_osm_map_with_squares.jpg
+1. Edit Media gtm_edit_media.jpg
+2. Edit Photo gtm_edit_photo.jpg
+3. Media Library list gtm_media_library_list.jpg
+4. Map with the points where the media are located to.jpg
+5. Clicking in one of the scores will bring a popup
 
 == Changelog ==
 
