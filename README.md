@@ -1,13 +1,21 @@
 # Geotagged Media
 
 **Contributors:** digitalfisherman
+
 **Donate link:** https://digfish.org
+
 **Tags:** maps, osm, openlayers, geotag, exif, dashboard
+
 **Requires at least:** 5.0
+
 **Tested up to:** 5.1.1
+
 **Stable tag:** trunk
+
 **Requires PHP:** 5.2.4
+
 **License:** GPLv2 or later
+
 **License URI:** https://www.gnu.org/licenses/gpl-2.0.html
 
 Geotagged Media shows the location of your photos in a map on the Dashboard.
