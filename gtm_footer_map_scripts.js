@@ -35,8 +35,12 @@ jQuery(document).ready(function ($) {
     $('#map').on('init', mapLoad);
 
     function mapLoad() {
+      if (points.length != 0) {
         $('#gtm-media-info').html('Found ' +  totalMediaCount + ' images, from which ' + points.length + ' are geocoded, whose locations are shown on the map.');
         $('.gtm-highlight').show();
+      } else {
+        $('#gtm-media-info').html('<STRONG>Found ' +  totalMediaCount + ' images, but none of them are geotagged ! Please upload geotagged pictures!</STRONG>');
+      }
 
         var features = new Array(points.length);
         var vectorSource = new ol.source.Vector({});

@@ -1,7 +1,7 @@
 === Geotagged Media ===
 Contributors: digitalfisherman
-Donate link: https://digfish.org/
-Tags: maps osm openlayers geotag exif dashboard
+Donate link: https://digfish.org
+Tags: maps, osm, openlayers, geotag, exif, dashboard
 Requires at least: 5.0
 Tested up to: 5.1.1
 Stable tag: trunk
@@ -13,8 +13,8 @@ Geotagged Media shows the location of your photos in a map on the Dashboard.
 
 == Description ==
 
-This sinple plugin allows to show the location of your photos on map, if they were geotagged (i.e., they contain an EXIF tag with the geocoordinates).
-It uses the OpenLayers JS Library(https://openlayers.org/) to render the points in a OpenStreetMap(https://www.openstreetmap.org/). Clicking on the points will show a popup with a thumbnail. Clicking in it will open the 'Edit Image' for that particular photo
+This simple plugin allows to show the location of your photos on map, if they were geotagged (i.e., they contain an EXIF tag with the geo-coordinates).
+It uses the OpenLayers JS Library (https://openlayers.org/) to render the points in a OpenStreetMap (https://www.openstreetmap.org/). Clicking on the points will show a popup with a thumbnail. Clicking in it will open the 'Edit Image' for that particular photo.
 Besides the map, it adds a 'metadata' column to the Media Listing table with the coordinates and the camera which took the photo. In the 'Edit Media' and 'Attachment Details' views adds fields with the coordinates and camera metadata values.
 
 
@@ -31,29 +31,27 @@ Besides the map, it adds a 'metadata' column to the Media Listing table with the
 
 Perhaps your photos were resized or edited with another tool. Some media editors remove the EXIF tags, and so they appear to not have any geodata in it. Copy or upload your photos directly from your camera device without any alterations or at least use a media editor that retains the EXIF tags.
 
-= Which composer commands are supported? =
-
-By now, allows you to view the contents of composer.json, update the plugins that are using composer, and add dependencies to the plugin using composer search through the dashboard.
-
 == Screenshots ==
 
-1. Edit Media gtm_edit_media.jpg
-2. Edit Photo gtm_edit_photo.jpg
-3. Media Library list gtm_media_library_list.jpg
-4. Map with the points where the media are located to.jpg
-5. Clicking in one of the scores will bring a popup
+1. Edit Media
+2. Edit Photo
+3. Media Library
+4. Map with the points where the media were located
+5. Clicking in one of the squares will bring a popup
 
 == Changelog ==
 
+= 0.1.1 =
+* First released version in wordpress.org
+
+= 0.1.0 =
+* First release
+
 = 0.0.1 =
 * First version
-
-= 0.1 =
-* First released version in wordpress.org
 
 
 == Upgrade Notice ==
 
 = 0.1 =
 First version. Not applicable.
-
