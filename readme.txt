@@ -31,10 +31,6 @@ Besides the map, it adds a 'metadata' column to the Media Listing table with the
 
 By default and for privacy reasons, Wordpress strips away EXIF tags containing the location metadata, so the only alternative is to use the Wordpress plugin [Exifography](https://pt.wordpress.org/plugins/thesography/) which extracts the location data from the tags and stores it in the wordpress database.
 
-= Which composer commands are supported? =
-
-By now, allows you to view the contents of composer.json, update the plugins that are using composer, and add dependencies to the plugin using composer search through the dashboard.
-
 == Screenshots ==
 
 1. Edit Media gtm_edit_media.jpg
