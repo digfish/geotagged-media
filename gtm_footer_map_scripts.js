@@ -117,6 +117,3 @@ jQuery(document).ready(function ($) {
 });
 
 
-function wp_media_link(link_text, image_post_id) {
-    return "<A href='/wp-admin/upload.php?item=" + image_post_id + "&mode=grid' target='_blank'>" + link_text + "</A>";
-}

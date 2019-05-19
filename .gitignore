@@ -3,3 +3,5 @@ assets/originals/*
 composer.lock
 vendor
 composer.json
+essays
+bin
