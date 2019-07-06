@@ -5,3 +5,4 @@ vendor
 composer.json
 essays
 bin
+tests/*

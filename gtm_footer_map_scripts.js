@@ -4,6 +4,11 @@ jQuery(document).ready(function ($) {
 
     var totalMediaCount = -1;
 
+    // in the frontend ajaxurl is not defined!
+    if (typeof ajaxurl == 'undefined') {
+      ajaxurl = '/wp-admin/admin-ajax.php';
+    }
+
 
     var stroke = new ol.style.Stroke({
         color: 'black',
@@ -25,7 +30,7 @@ jQuery(document).ready(function ($) {
     $.get(ajaxurl + "?action=gtm_geocoded_media",
         {}).success(
         function (response) {
-    //        console.log('geocoded data', response[0]);
+            console.log('geocoded data', response[0]);
     //        console.log('Total media count', response[1]);
             totalMediaCount = parseInt(response[1]);
             points = response[0];
@@ -115,5 +120,3 @@ jQuery(document).ready(function ($) {
         });
     }
 });
-
-

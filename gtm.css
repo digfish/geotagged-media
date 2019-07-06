@@ -1,8 +1,13 @@
 .gtm-highlight {
     font-weight: bold;
 }
+
 .gtm-map {
     height: 95%;
     margin-bottom: 5%;
     width: 100%;
+}
+
+body.gtm-body {
+    font-size: 12pt;
 }

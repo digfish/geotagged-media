@@ -58,6 +58,12 @@ By default and for privacy reasons, Wordpress strips away EXIF tags containing t
 ## Changelog 
 
 
+### 0.2.0 
+* Hability to rename photos directly when uploading them using reverse geocoding
+* Feature that show OS Map with the geotagged photos using shortcode `[gtm_map]`
+* Removed dependency from the plugin Exifography
+
+
 ### 0.1.2 
 * Some minor corrections
 * Updated README
