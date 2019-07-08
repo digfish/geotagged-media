@@ -329,7 +329,7 @@ function gtm_format_metadata_entry( $label, $value, $dashicon = '', $with_link =
 function gtm_submitbox_misc_actions( $post ) {
 	require_once "gtm_geocode_lib.php";
 	$atchmnt_post_data = get_post( $post->ID );
-	d( 'attachment_post_data', $atchmnt_post_data );
+	//d( 'attachment_post_data', $atchmnt_post_data );
 	$image = wp_get_attachment_metadata( $post->ID );
 	if ( ! empty( $image['image_meta'] ) ) {
 		$md = $image['image_meta'];
@@ -345,12 +345,12 @@ function gtm_submitbox_misc_actions( $post ) {
 			$long_dec = gtm_geo_dms2dec( $md['longitude'], $md['longitude_ref'] );
 
 			$revgeocode_compl = gtm_revgeocode( array( 'lat' => $lat_dec, 'long' => $long_dec ) );
-			d( 'complete', $revgeocode_compl );
+			//d( 'complete', $revgeocode_compl );
 			$toks        = preg_split( "/,/", $revgeocode_compl );
 			$street_name = trim( $toks[0] );
-			d( 'street_name', $street_name );
+			//d( 'street_name', $street_name );
 			echo gtm_gmaps_link( $lat_dec, $long_dec );
-			d( $image );
+			//d( $image );
 			echo "<A href='upload.php?page=gtm&action=media_new_title&media_id={$post->ID}&new_title=$street_name'>Do you want to change the title of this picture to '$revgeocode_compl' ?</A>";
 		} else {
 			$url_geomark = "/wp-admin/upload.php?page=gtm&action=marknew&post_id={$post->ID}";
@@ -418,7 +418,7 @@ function gtm_add_metadata_custom_column( $column_name, $id ) {
 		if ( gtm_is_metadata_empty( $all_md ) ) {
 			$url_geomark = "/wp-admin/upload.php?page=gtm&action=marknew&post_id=$id";
 			echo "<P><A href='$url_geomark' target='_blank'>Click here to geotag this photo</A></P>";
-			d( $all_md );
+			//d( $all_md );
 		} else {
 			$md = $all_md['image_meta'];
 			if ( ! empty( $md['camera'] ) ) {
