@@ -12,10 +12,10 @@ jQuery(document).ready(function ($) {
 
     var stroke = new ol.style.Stroke({
         color: 'black',
-        width: 2
+        width: 1
     });
     var fill = new ol.style.Fill({
-        color: 'red'
+        color: 'green'
     });
     var square = new ol.style.Style({
         image: new ol.style.RegularShape({
@@ -24,6 +24,14 @@ jQuery(document).ready(function ($) {
             points: 4,
             radius: 10,
             angle: Math.PI / 4
+        })
+    });
+
+    var dot = new ol.style.Style({
+        image: new ol.style.Circle({
+            fill: fill,
+            stroke: stroke,
+            radius: 3
         })
     });
 
@@ -60,7 +68,7 @@ jQuery(document).ready(function ($) {
                 thumbnail: point.thumbnail,
                 post_id: point.post_id
             });
-            features[i].setStyle(square);
+            features[i].setStyle(dot);
         }
 
  //       console.log('features', features);
@@ -105,10 +113,10 @@ jQuery(document).ready(function ($) {
                 //  console.log('foreachpixel feature', feature);
                 var properties = feature.getProperties();
                 var coord = ol.proj.transform(evt.coordinate, 'EPSG:3857', 'EPSG:4326');
-                // console.log('properties', properties);
+                 console.log('properties', properties);
                 // console.log('name', properties.name);
                 // console.log('coordiantes', coord);
-                var img_html = "<IMG src='/wp-content/uploads/" + properties.thumbnail + "'>";
+                var img_html = "<IMG src='/wp-content/uploads/" + properties.thumbnail + "' style='width: 200px; max-width: 288px'>";
                 $(popupElement).popover({
                     placement: 'top',
                     animation: false,

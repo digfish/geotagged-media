@@ -12,3 +12,10 @@ if (!function_exists('d')) {
 		// do nothing
 	}
 }
+
+if (!function_exists('debug')) {
+
+	function debug($a1,$a2='') {
+		// do nothing
+	}
+}

@@ -96,17 +96,23 @@ function gtm_frontend_scripts( $hook_suffix ) {
 
 function gtm_dashboard_init() {
 	$gtm_options = get_option( 'gtm_options' );
-	add_action( 'admin_menu', 'gtm_add_media_menu_item' );
+
+	if ( isset($gtm_options['add_dashboard_geotagged_media_option'])) {
+		add_action( 'admin_menu', 'gtm_add_media_menu_item' );
+	}
 	add_action( 'admin_menu', 'gtm_add_settings_item' );
-	add_action( 'attachment_submitbox_misc_actions', 'gtm_submitbox_misc_actions', 15 );
+	if ( isset($gtm_options['media_metadata_gps_details'])) {
+		add_action( 'attachment_submitbox_misc_actions', 'gtm_submitbox_misc_actions', 15 );
+	}
 	add_action( 'manage_media_custom_column', 'gtm_add_metadata_custom_column', 10, 2 );
 	add_action( 'admin_enqueue_scripts', 'gtm_admin_scripts', 1000 );
 	//add_action( 'add_attachment', 'gtm_set_fields_on_media_upload', 20,2 );
 	add_action('add_attachment', 'gtm_on_add_attachment');
-	add_filter( 'attachment_fields_to_edit', 'gtm_attachment_field_to_edit', 10, 2 );
-	//if ( isset( $gtm_options['geocode_on_upload'] ) ) {
-		add_filter( 'wp_read_image_metadata', 'gtm_set_fields_on_media_upload', 20, 2 );
-	//}
+	if (isset($gtm_options['media_show_edit_exif_form'])) {
+		add_filter( 'attachment_fields_to_edit', 'gtm_attachment_field_to_edit', 10, 2 );
+	}
+	add_filter( 'wp_read_image_metadata', 'gtm_set_fields_on_media_upload', 20, 2 );
+
 	add_filter( 'manage_media_columns', 'gtm_add_metadata_column' );
 }
 
@@ -206,6 +212,7 @@ function gtm_extract_exif($meta,$file) {
 function gtm_set_fields_on_media_upload( $meta, $image_file='' ) {
 
 	require_once "gtm_geocode_lib.php";
+	$gtm_options = get_option("gtm_options");
 
 	$md = $meta;
 
@@ -218,8 +225,10 @@ function gtm_set_fields_on_media_upload( $meta, $image_file='' ) {
 		return $meta;
 	}
 
-
-
+	// skip renaming using geocode if the setting is not set
+	if (!isset($gtm_options['geocode_on_upload'])) {
+		return $md;
+	}
 
 	if ( ! empty( $md['latitude'] && ! empty( $md['longitude'] ) ) ) {
 
@@ -334,8 +343,7 @@ function gtm_submitbox_misc_actions( $post ) {
 			gtm_format_metadata_entry( 'longitude', gtm_geo_pretty_fracs2dec( $md['longitude'] ) . $md['longitude_ref'], 'admin-site' );
 			$lat_dec  = gtm_geo_dms2dec( $md['latitude'], $md['latitude_ref'] );
 			$long_dec = gtm_geo_dms2dec( $md['longitude'], $md['longitude_ref'] );
-			/*            $lat_dec  = ( ( $md['latitude_ref'] == 'S' ) ? "-" : "" ) . gtm_geo_dms2dec($md['latitude']);
-						$long_dec = ( ( $md['longitude_ref'] == 'W' ) ? "-" : "" ) . gtm_geo_dms2dec($md['longitude']);*/
+
 			$revgeocode_compl = gtm_revgeocode( array( 'lat' => $lat_dec, 'long' => $long_dec ) );
 			d( 'complete', $revgeocode_compl );
 			$toks        = preg_split( "/,/", $revgeocode_compl );
@@ -424,18 +432,15 @@ function gtm_add_metadata_custom_column( $column_name, $id ) {
 				$lat_dec       = gtm_geo_dms2dec( $md['latitude'], $md['latitude_ref'] );
 				$long_dec      = gtm_geo_dms2dec( $md['longitude'], $md['longitude_ref'] );
 
-//                $lat_dec       = ( ( $md['latitude_ref'] == 'S' ) ? "-" : "" ) . gtm_geo_dms2dec($md['latitude']);
-//                $long_dec      = ( ( $md['longitude_ref'] == 'W' ) ? "-" : "" ) . gtm_geo_dms2dec($md['longitude']);
-				$buf .= gtm_gmaps_link( $lat_dec, $long_dec );
+			$buf .= gtm_gmaps_link( $lat_dec, $long_dec );
 			}
 		}
 
-		//d($column_name,$id);
-		//d($md);
+
 		echo $buf;
 
-		//echo $md['file'];
-	} //else echo d($post);
+
+	}
 }
 
 function gtm_format_md( $label, $value ) {
