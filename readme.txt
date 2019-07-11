@@ -64,6 +64,7 @@ By default and for privacy reasons, Wordpress strips away EXIF tags containing t
 First version. Not applicable.
 
 == TODO ==
-* Allow to geotag your own photos
 * Add an overlay icon to media library in grid mode
 * Filter on Media Library by if have metadata fields for camera or geolocation
+* Clicking on the popup in the geomap it will not bring the attachment details form in the media library in grid mode
+* composer must be installed not by default, but ONLY if the user wants to use geocoding

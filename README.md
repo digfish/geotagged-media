@@ -36,6 +36,7 @@ Besides the map, it adds a 'metadata' column to the Media Listing table with the
 By default and for privacy reasons, Wordpress strips away EXIF tags containing the location metadata, so the only alternative is to use the Wordpress plugin [Exifography](https://pt.wordpress.org/plugins/thesography/) which extracts the location data from the tags and stores it in the wordpress database.
 
 
+
 ## Screenshots 
 
 ### 1. Edit Media gtm_edit_media.jpg
@@ -86,6 +87,6 @@ First version. Not applicable.
 
 
 ## TODO 
-* Allow to geotag your own the photos
 * Add an overlay icon to media library in grid mode
 * Filter on Media Library by if have metadata fields for camera or geolocation
+* Clicking on the popup in the geomap it will not bring the attachment details form in the media library in grid mode

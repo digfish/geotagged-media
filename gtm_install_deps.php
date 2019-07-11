@@ -24,7 +24,7 @@ function gtm_composer_exec( $options ) {
 
 function gtm_install_deps() {
 	$out = gtm_composer_exec( "update" );
-
+	echo $out;
 }
 
 

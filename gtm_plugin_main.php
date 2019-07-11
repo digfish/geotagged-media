@@ -29,15 +29,39 @@ add_action( 'plugins_loaded', 'gtm_plugin_instantiate', 5 );
 register_activation_hook( __FILE__, 'gtm_hook_on_plugin_activation' );
 
 
+
+
 function gtm_hook_on_plugin_activation() {
 	require_once( "gtm_install_deps.php" );
 
 	$plugin_dir = __DIR__;
+
+	$option_names = gtm_option_names();
+	$option_values = get_option('gtm_options');
+	$new_options_values = array();
+	foreach ($option_names as $name) {
+		if ( !isset( $option_values[$name] )  ) {
+			// if not already created, creat the option values to true with the exception
+			// of geocode_on_upload
+			if ( $name != 'geocode_on_upload' ) {
+				$new_options_values[$name] = 'true' ;
+			}
+		}
+	}
+
+	if (count($new_options_values) > 0) {
+		update_option('gtm_options',$new_options_values);
+	}
+
+	$gtm_options = get_option('gtm_options');
+	//debug('gtm settings after activation',$gtm_options);
+	do_action('qm/debug',$gtm_options);
+
 	if ( file_exists( "$plugin_dir/vendor" ) && is_dir( "$plugin_dir/vendor" ) ) {
 		return;
 	}
 
-	gtm_install_deps();
+//	gtm_install_deps();
 }
 
 
@@ -402,6 +426,16 @@ function gtm_is_metadata_empty( $r ) {
 	return true;
 }
 
+function gtm_option_names() {
+	return array(
+		'geocode_on_upload',
+		'add_metadata_column',
+		'media_metadata_gps_details',
+		'media_show_edit_exif_form',
+		'add_dashboard_geotagged_media_option'
+	);
+}
+
 function gtm_add_metadata_custom_column( $column_name, $id ) {
 
 	$post = get_post( $id );
@@ -648,6 +682,40 @@ function gtm_exif_format_dms( $r_dms ) {
 	);
 }
 
+/*** HELPERS ***/
+
+function gtm_composer_phar_exists() {
+	return file_exists( __DIR__ . '/' . 'composer.phar' );
+}
+
+function gtm_does_vendor_dir_exists() {
+	$plugin_dir = plugin_dir_path( __FILE__ );
+	return ( file_exists( "$plugin_dir/vendor" ) && is_dir( "$plugin_dir/vendor" ) );
+}
+
+function gtm_download_composer() {
+	// https://getcomposer.org/composer.phar
+
+	$composer_download_url = 'https://getcomposer.org/composer.phar';
+
+	if ( gtm_composer_phar_exists() ) {
+		return NULL;
+	}
+
+	echo "<P>Downloading $composer_download_url ... </P>";
+	$ch          = curl_init( $composer_download_url );
+	$plugin_path = plugin_dir_path( __FILE__ );
+	$fp          = fopen( "$plugin_path/composer.phar", 'w' );
+	curl_setopt( $ch, CURLOPT_FILE, $fp );
+	curl_setopt( $ch, CURLOPT_HEADER, 0 );
+
+	curl_exec( $ch );
+	curl_close( $ch );
+	fclose( $fp );
+	echo "<P>Composer Download complete! </P>";
+	return true;
+
+}
 /**** AJAX ACTIONS ****/
 
 
@@ -667,6 +735,33 @@ function ajax_get_options_values() {
 	echo json_encode( get_option( 'gtm_options' ) );
 	wp_die();
 }
+
+add_action ('wp_ajax_gtm_download_composer',function() {
+	$composer_downloaded = gtm_download_composer();
+
+	if ($composer_downloaded === TRUE) {
+		echo "Composer downloaded with sucess!";
+	} else if ($composer_downloaded == NULL) {
+		echo "Composer already downloaded!";
+	} else {
+		echo "Composer failed to download!";
+	}
+	echo "Now that composer was downloaded, click the following button to get the dependencies";
+	echo "<BUTTON class='button' id='btn_composer_init_vendor'>Click here to download dependencies</BUTTON>";
+	wp_die();
+});
+
+add_action('wp_ajax_gtm_install_deps', function () {
+	require_once( "gtm_install_deps.php" );
+	if (!gtm_does_vendor_dir_exists()) {
+		$composer_output = gtm_install_deps();
+		echo $composer_output;
+		echo "Dependencies installed with success!";
+	} else {
+		echo "Dependencies already installed!";
+	}
+	wp_die();
+});
 
 add_action( 'wp_ajax_gtm_geomark', function () {
 	$coordinates = $_REQUEST['coordinates'];
