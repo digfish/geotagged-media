@@ -11,3 +11,7 @@
 body.gtm-body {
     font-size: 12pt;
 }
+
+.gtm-popup-title {
+    font-size-adjust: 1.1;
+}

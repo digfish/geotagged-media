@@ -8,7 +8,8 @@
     "geocoder-php/nominatim-provider": "^5.1"
   },
   "require-dev": {
-    "wpreadme2markdown/wpreadme2markdown": "*"
+    "wpreadme2markdown/wpreadme2markdown": "*",
+    "mustache/mustache": "^2.5"
   },
   "scripts": {
     "wp2md": "php bin/wp2md.php readme.txt"

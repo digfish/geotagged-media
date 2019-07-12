@@ -1,0 +1,7 @@
+<script id="mst_textarea_console" type="x-tmpl-mustache">
+<TEXTAREA style='font-family: monospace; width: 800px; height: 300px' >{{text}}</TEXTAREA>
+</script>
+
+<script id="mst_simple_paragraph" type="x-tmpl-mustache">
+<P> {{{text}}} </P>
+</script>

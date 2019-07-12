@@ -11,3 +11,15 @@ function gtm_action_link(action, text, params) {
     qstr = pkv.join('&');
     return "<A href='/wp-admin/upload.php?page=gtm&action=" + action + (qstr ? ("&" + qstr) : "") + "' target='_blank'>" + text + "</A>";
 }
+
+function mst_render(id,vars) {
+    var tmpl_script = $('head').find(id).html();
+    console.log(tmpl_script);
+    return Mustache.render(tmpl_script, vars);
+}
+
+function mst_render_html(id,vars){
+    var tmpl_script = $('head').find(id).html();
+    console.log(tmpl_script);
+    return Mustache.to_html(tmpl_script, vars);
+}
