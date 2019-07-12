@@ -29,48 +29,49 @@ add_action( 'plugins_loaded', 'gtm_plugin_instantiate', 5 );
 register_activation_hook( __FILE__, 'gtm_hook_on_plugin_activation' );
 
 
-
-
 function gtm_hook_on_plugin_activation() {
-	require_once( "gtm_install_deps.php" );
+
+
 
 	$plugin_dir = __DIR__;
 
-	$option_names = gtm_option_names();
-	$option_values = get_option('gtm_options');
+	$option_names       = gtm_option_names();
+	$option_values      = get_option( 'gtm_options' );
 	$new_options_values = array();
-	foreach ($option_names as $name) {
-		if ( !isset( $option_values[$name] )  ) {
+	foreach ( $option_names as $name ) {
+		if ( ! isset( $option_values[ $name ] ) ) {
 			// if not already created, creat the option values to true with the exception
 			// of geocode_on_upload
 			if ( $name != 'geocode_on_upload' ) {
-				$new_options_values[$name] = 'true' ;
+				$new_options_values[ $name ] = 'true';
 			}
 		}
 	}
 
-	if (count($new_options_values) > 0) {
-		update_option('gtm_options',$new_options_values);
+	if ( count( $new_options_values ) > 0 ) {
+		update_option( 'gtm_options', $new_options_values );
 	}
 
-	$gtm_options = get_option('gtm_options');
+	$gtm_options = get_option( 'gtm_options' );
 	//debug('gtm settings after activation',$gtm_options);
-	do_action('qm/debug',$gtm_options);
+	do_action( 'qm/debug', $gtm_options );
 
 	if ( file_exists( "$plugin_dir/vendor" ) && is_dir( "$plugin_dir/vendor" ) ) {
 		return;
 	}
 
-//	gtm_install_deps();
 }
 
 
 function gtm_plugin_instantiate() {
+	debug( __FUNCTION__ );
 	$gtm_options = get_option( 'gtm_options' );
 
 	if ( is_admin() ) {
+		debug( 'Loading backoffice...' );
 		gtm_dashboard_init();
 	} else {
+		debug( 'Loading frontoffice...' );
 		gtm_frontend_init();
 	}
 
@@ -80,13 +81,27 @@ function gtm_plugin_instantiate() {
 function gtm_frontend_init() {
 	add_action( 'wp_enqueue_scripts', 'gtm_frontend_scripts' );
 	add_shortcode( 'gtm_map', function ( $attrs ) {
-		require_once "gtm_dash_page.php";
+		require_once "gtm_tagged_media_page.php";
 	} );
 	add_filter( 'body_class', function ( $body_classes ) {
 		$body_classes[] = 'gtm-body';
 
 		return $body_classes;
 	} );
+	add_action('wp_footer',function() {
+		global $wp_scripts, $wp_styles;
+
+		$wp_scr = array_map(function ($scr) {
+			return array(
+				'name' => $scr->handle,
+				'location' => $scr->src,
+				'deps' => $scr->deps
+			);
+		},$wp_scripts->registered);
+	//	d($wp_scripts->registered);
+		d( $wp_scr );
+		d ($wp_styles);
+	});
 
 }
 
@@ -97,48 +112,77 @@ function gtm_frontend_scripts( $hook_suffix ) {
 	$bootstrap_css       = plugin_dir_url( __FILE__ ) . 'bootstrap/bootstrap.css';
 	$bootstrap_css_theme = plugin_dir_url( __FILE__ ) . 'bootstrap/bootstrap-theme.css';
 	$bootstrap_js        = plugin_dir_url( __FILE__ ) . 'bootstrap/bootstrap-3.3.6.min.js';
+	$mustache_js         = plugin_dir_url( __FILE__ ) . 'mustache/mustache-3.0.1.js';
 	$gtm_css             = plugin_dir_url( __FILE__ ) . 'gtm.css';
 	$gtm_js              = plugin_dir_url( __FILE__ ) . 'gtm.js';
+
 	wp_register_style( 'ol_css', $ol_css, array(), '5.3.0' );
 	wp_register_script( 'ol_js', $ol_js, array(), '5.3.0' );
 	wp_register_style( 'bootstrap_css', $bootstrap_css, '3.3.6' );
 	wp_register_style( 'bootstrap_css_theme', $bootstrap_css_theme, '3.3.6' );
 
 	wp_register_script( 'bootstrap_js', $bootstrap_js, array( 'jquery' ), '3.3.6' );
+	wp_register_script( 'mustache_js', $mustache_js, array(), '3.0.1' );
 	wp_register_style( 'gtm_css', $gtm_css );
 	wp_register_script( 'gtm_js', $gtm_js );
 
+	  wp_enqueue_style('wp-jquery-ui-dialog');
 	wp_enqueue_style( 'bootstrap_css' );
-//	wp_enqueue_style('bootstrap_css_theme');
+	wp_enqueue_style('bootstrap_css_theme');
 	wp_enqueue_style( 'ol_css' );
 	wp_enqueue_style( 'gtm_css' );
-	wp_enqueue_script( 'bootstrap_js' );
-	wp_enqueue_script( 'gtm_js' );
-	wp_enqueue_script( 'ol_js' );
+
+	wp_enqueue_script('jquery-core');
+	wp_enqueue_script('jquery-ui-core', false,array(),false, false);
+	wp_enqueue_script('jquery-ui-widget','',array('jquery-ui-core'), false, false);
+	wp_enqueue_script('jquery-ui-tooltip','',array('jquery-ui-widget'), false, false);
+	wp_enqueue_script('jquery-ui-dialog','',array('jquery-ui-widget'), false, false);
+
+	wp_add_inline_script('jquery-ui-tooltip','jQuery.widget.bridge(\'uitooltip\', jQuery.ui.tooltip);');
+
+	wp_enqueue_script( 'bootstrap_js','',array('jquery-ui-tooltip-bridge'));
+	wp_enqueue_script( 'mustache_js' , '',array('jquery-core'));
+	wp_enqueue_script( 'gtm_js','',array('ol_js') );
+	wp_enqueue_script( 'ol_js','',array('jquery-ui-tooltip-bridge') );
+
+
 	wp_add_inline_script( 'ol_js', file_get_contents( plugin_dir_path( __FILE__ ) . 'gtm_footer_map_scripts.js' ) );
 }
 
 function gtm_dashboard_init() {
+
+	add_action( 'admin_enqueue_scripts', 'gtm_admin_scripts', 1000 );
 	$gtm_options = get_option( 'gtm_options' );
 
-	if ( isset($gtm_options['add_dashboard_geotagged_media_option'])) {
+	if ( isset( $gtm_options['add_dashboard_geotagged_media_option'] ) ) {
 		add_action( 'admin_menu', 'gtm_add_media_menu_item' );
 	}
 	add_action( 'admin_menu', 'gtm_add_settings_item' );
-	if ( isset($gtm_options['media_metadata_gps_details'])) {
+	if ( isset( $gtm_options['media_metadata_gps_details'] ) ) {
 		add_action( 'attachment_submitbox_misc_actions', 'gtm_submitbox_misc_actions', 15 );
 	}
 	add_action( 'manage_media_custom_column', 'gtm_add_metadata_custom_column', 10, 2 );
-	add_action( 'admin_enqueue_scripts', 'gtm_admin_scripts', 1000 );
 	//add_action( 'add_attachment', 'gtm_set_fields_on_media_upload', 20,2 );
-	add_action('add_attachment', 'gtm_on_add_attachment');
-	if (isset($gtm_options['media_show_edit_exif_form'])) {
+	add_action( 'add_attachment', 'gtm_on_add_attachment' );
+	if ( isset( $gtm_options['media_show_edit_exif_form'] ) ) {
 		add_filter( 'attachment_fields_to_edit', 'gtm_attachment_field_to_edit', 10, 2 );
 	}
 	add_filter( 'wp_read_image_metadata', 'gtm_set_fields_on_media_upload', 20, 2 );
 
 	add_filter( 'manage_media_columns', 'gtm_add_metadata_column' );
+	add_action('admin_notices', 'gtm_admin_notices');
 }
+
+//TODO improve with with a X-box
+function gtm_admin_notices() {
+	$first_run = get_option( 'gtm_first_configure' );
+//	d($first_run);
+	if ( $first_run === false ) {
+		echo "<DIV class='updated'>" . GTM_PLUGIN_NAME . " was installed! Go to the <A href='" . admin_url( 'options-general.php?page=gtm-admin-options' ) . "'>settings page</A> to configure it.</DIV>";
+	}
+}
+
+
 
 function gtm_add_settings_item() {
 	$options_page_title = 'Geotagged Media Settings';
@@ -166,6 +210,7 @@ function gtm_options_admin_page() {
 		}
 	}
 
+	update_option('gtm_first_configure',true);
 	require_once "gtm_settings_page.php";
 
 }
@@ -181,76 +226,86 @@ function gtm_verify_debug_functions_exist() {
 function gtm_admin_scripts( $hook_suffix ) {
 
 	if ( $hook_suffix == 'media_page_gtm' ) {
-		$ol_css              = plugin_dir_url( __FILE__ ) . 'ol/ol-5.3.0.css';
-		$ol_js               = plugin_dir_url( __FILE__ ) . 'ol/ol-5.3.0.js';
-		$bootstrap_css       = plugin_dir_url( __FILE__ ) . 'bootstrap/bootstrap.css';
-		$bootstrap_css_theme = plugin_dir_url( __FILE__ ) . 'bootstrap/bootstrap-theme.css';
-		$bootstrap_js        = plugin_dir_url( __FILE__ ) . 'bootstrap/bootstrap-3.3.6.min.js';
-		$gtm_css             = plugin_dir_url( __FILE__ ) . 'gtm.css';
-		$gtm_js              = plugin_dir_url( __FILE__ ) . 'gtm.js';
+		$ol_css = plugin_dir_url( __FILE__ ) . 'ol/ol-5.3.0.css';
+		$ol_js  = plugin_dir_url( __FILE__ ) . 'ol/ol-5.3.0.js';
 		wp_register_style( 'ol_css', $ol_css, array(), '5.3.0' );
 		wp_register_script( 'ol_js', $ol_js, array(), '5.3.0' );
-		wp_register_style( 'bootstrap_css', $bootstrap_css, '3.3.6' );
-		wp_register_style( 'bootstrap_css_theme', $bootstrap_css_theme, '3.3.6' );
-		wp_register_script( 'bootstrap_js', $bootstrap_js, array( 'jquery' ), '3.3.6' );
-		wp_register_style( 'gtm_css', $gtm_css );
-		wp_register_script( 'gtm_js', $gtm_js );
-		wp_enqueue_style( 'bootstrap_css' );
-		wp_enqueue_style( 'bootstrap_css_theme' );
-		wp_enqueue_style( 'ol_css' );
 		wp_enqueue_style( 'gtm_css' );
-		wp_enqueue_script( 'bootstrap_js' );
-		wp_enqueue_script( 'gtm_js' );
 		wp_enqueue_script( 'ol_js' );
-		if ( empty( $_REQUEST['action'] ) ) {
-			wp_add_inline_script( 'ol_js', file_get_contents( plugin_dir_path( __FILE__ ) . 'gtm_footer_map_scripts.js' ) );
-		} elseif ( $_REQUEST['action'] == 'marknew' ) {
-			wp_add_inline_script( 'ol_js', file_get_contents( plugin_dir_path( __FILE__ ) . 'gtm_marknew_scripts.js' ) );
-		}
 	}
+	$bootstrap_css       = plugin_dir_url( __FILE__ ) . 'bootstrap/bootstrap.css';
+	$bootstrap_css_theme = plugin_dir_url( __FILE__ ) . 'bootstrap/bootstrap-theme.css';
+	$bootstrap_js        = plugin_dir_url( __FILE__ ) . 'bootstrap/bootstrap-3.3.6.min.js';
+	$gtm_css             = plugin_dir_url( __FILE__ ) . 'gtm.css';
+	$gtm_js              = plugin_dir_url( __FILE__ ) . 'gtm.js';
+	$mustache_js         = plugin_dir_url( __FILE__ ) . 'mustache/mustache-3.0.1.js';
+	wp_register_style( 'bootstrap_css', $bootstrap_css, '3.3.6' );
+	wp_register_style( 'bootstrap_css_theme', $bootstrap_css_theme, '3.3.6' );
+	wp_register_script( 'bootstrap_js', $bootstrap_js, array( 'jquery' ), '3.3.6' );
+	wp_register_script( 'mustache_js', $mustache_js, array(), '3.0.1' );
+	wp_register_style( 'gtm_css', $gtm_css );
+	wp_register_script( 'gtm_js', $gtm_js );
+	wp_enqueue_style( 'bootstrap_css' );
+	wp_enqueue_style( 'bootstrap_css_theme' );
+	wp_enqueue_style( 'ol_css' );
+	wp_enqueue_script( 'bootstrap_js' );
+	wp_enqueue_script( 'mustache_js' );
+	wp_enqueue_script( 'gtm_js' );
+	if ( empty( $_REQUEST['action'] ) ) {
+		wp_add_inline_script( 'ol_js', file_get_contents( plugin_dir_path( __FILE__ ) . 'gtm_footer_map_scripts.js' ) );
+	} elseif ( $_REQUEST['action'] == 'marknew' ) {
+		wp_add_inline_script( 'ol_js', file_get_contents( plugin_dir_path( __FILE__ ) . 'gtm_marknew_scripts.js' ) );
+	}
+//	}
 }
 
-function gtm_on_add_attachment($r_args) {
+function gtm_on_add_attachment( $r_args ) {
 	//
 }
 
-function gtm_extract_exif($meta,$file) {
+function gtm_extract_exif( $meta, $file ) {
 	$exif = @exif_read_data( $file );
-	if (!empty($exif['GPSLatitude']))
-		$meta['latitude'] = $exif['GPSLatitude'] ;
-	if (!empty($exif['GPSLatitudeRef']))
+	if ( ! empty( $exif['GPSLatitude'] ) ) {
+		$meta['latitude'] = $exif['GPSLatitude'];
+	}
+	if ( ! empty( $exif['GPSLatitudeRef'] ) ) {
 		$meta['latitude_ref'] = trim( $exif['GPSLatitudeRef'] );
-	if (!empty($exif['GPSLongitude']))
-		$meta['longitude'] = $exif['GPSLongitude'] ;
-	if (!empty($exif['GPSLongitudeRef']))
+	}
+	if ( ! empty( $exif['GPSLongitude'] ) ) {
+		$meta['longitude'] = $exif['GPSLongitude'];
+	}
+	if ( ! empty( $exif['GPSLongitudeRef'] ) ) {
 		$meta['longitude_ref'] = trim( $exif['GPSLongitudeRef'] );
-	if (!empty($exif['ExposureBiasValue']))
+	}
+	if ( ! empty( $exif['ExposureBiasValue'] ) ) {
 		$meta['exposure_bias'] = trim( $exif['ExposureBiasValue'] );
-	if (!empty($exif['Flash']))
+	}
+	if ( ! empty( $exif['Flash'] ) ) {
 		$meta['flash'] = trim( $exif['Flash'] );
+	}
 
 	return $meta;
 
 }
 
-function gtm_set_fields_on_media_upload( $meta, $image_file='' ) {
+function gtm_set_fields_on_media_upload( $meta, $image_file = '' ) {
 
 	require_once "gtm_geocode_lib.php";
-	$gtm_options = get_option("gtm_options");
+	$gtm_options = get_option( "gtm_options" );
 
 	$md = $meta;
 
-	if (!empty($image_file)) {
+	if ( ! empty( $image_file ) ) {
 		$md = gtm_extract_exif( $meta, $image_file );
 	}
 
 
-	if (!isset($md['latitude'])) {
+	if ( ! isset( $md['latitude'] ) ) {
 		return $meta;
 	}
 
 	// skip renaming using geocode if the setting is not set
-	if (!isset($gtm_options['geocode_on_upload'])) {
+	if ( ! isset( $gtm_options['geocode_on_upload'] ) ) {
 		return $md;
 	}
 
@@ -261,10 +316,9 @@ function gtm_set_fields_on_media_upload( $meta, $image_file='' ) {
 		$complete_location = gtm_revgeocode( array( 'lat' => $lat_dec, 'long' => $long_dec ) );
 		$toks              = preg_split( "/,/", $complete_location );
 		$street_name       = join( ' ', array_slice( $toks, 0, 2 ) );
-		$md['title']     = $street_name;
-		$md['caption']   = $street_name;
+		$md['title']       = $street_name;
+		$md['caption']     = $street_name;
 	}
-
 
 
 	return $md;
@@ -286,7 +340,7 @@ function gtm_dash_page_callback() {
 	}
 	switch ( $action ) {
 		case 'render_geotags':
-			require_once "gtm_dash_page.php";
+			require_once "gtm_tagged_media_page.php";
 			break;
 		case 'marknew':
 			require_once "gtm_geomark.php";
@@ -466,7 +520,7 @@ function gtm_add_metadata_custom_column( $column_name, $id ) {
 				$lat_dec       = gtm_geo_dms2dec( $md['latitude'], $md['latitude_ref'] );
 				$long_dec      = gtm_geo_dms2dec( $md['longitude'], $md['longitude_ref'] );
 
-			$buf .= gtm_gmaps_link( $lat_dec, $long_dec );
+				$buf .= gtm_gmaps_link( $lat_dec, $long_dec );
 			}
 		}
 
@@ -690,6 +744,7 @@ function gtm_composer_phar_exists() {
 
 function gtm_does_vendor_dir_exists() {
 	$plugin_dir = plugin_dir_path( __FILE__ );
+
 	return ( file_exists( "$plugin_dir/vendor" ) && is_dir( "$plugin_dir/vendor" ) );
 }
 
@@ -699,7 +754,7 @@ function gtm_download_composer() {
 	$composer_download_url = 'https://getcomposer.org/composer.phar';
 
 	if ( gtm_composer_phar_exists() ) {
-		return NULL;
+		return null;
 	}
 
 	echo "<P>Downloading $composer_download_url ... </P>";
@@ -713,9 +768,11 @@ function gtm_download_composer() {
 	curl_close( $ch );
 	fclose( $fp );
 	echo "<P>Composer Download complete! </P>";
+
 	return true;
 
 }
+
 /**** AJAX ACTIONS ****/
 
 
@@ -736,24 +793,23 @@ function ajax_get_options_values() {
 	wp_die();
 }
 
-add_action ('wp_ajax_gtm_download_composer',function() {
+add_action( 'wp_ajax_gtm_download_composer', function () {
 	$composer_downloaded = gtm_download_composer();
 
-	if ($composer_downloaded === TRUE) {
+	if ( $composer_downloaded === true ) {
 		echo "Composer downloaded with sucess!";
-	} else if ($composer_downloaded == NULL) {
+	} else if ( $composer_downloaded == null ) {
 		echo "Composer already downloaded!";
 	} else {
 		echo "Composer failed to download!";
 	}
-	echo "Now that composer was downloaded, click the following button to get the dependencies";
-	echo "<BUTTON class='button' id='btn_composer_init_vendor'>Click here to download dependencies</BUTTON>";
+	echo "<P>Now that composer was downloaded, click the following button to get the dependencies: <BUTTON class='button' id='btn_composer_init_vendor'>Click here to download dependencies</BUTTON></P>";
 	wp_die();
-});
+} );
 
-add_action('wp_ajax_gtm_install_deps', function () {
+add_action( 'wp_ajax_gtm_install_deps', function () {
 	require_once( "gtm_install_deps.php" );
-	if (!gtm_does_vendor_dir_exists()) {
+	if ( ! gtm_does_vendor_dir_exists() ) {
 		$composer_output = gtm_install_deps();
 		echo $composer_output;
 		echo "Dependencies installed with success!";
@@ -761,7 +817,7 @@ add_action('wp_ajax_gtm_install_deps', function () {
 		echo "Dependencies already installed!";
 	}
 	wp_die();
-});
+} );
 
 add_action( 'wp_ajax_gtm_geomark', function () {
 	$coordinates = $_REQUEST['coordinates'];
