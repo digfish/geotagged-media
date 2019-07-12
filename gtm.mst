@@ -5,3 +5,16 @@
 <script id="mst_simple_paragraph" type="x-tmpl-mustache">
 <P> {{{text}}} </P>
 </script>
+
+<script id="mst_popover_image" type="x-tmpl-mustache">
+<IMG src='/wp-content/uploads/{{thumbnail_src}}' style='width: 200px; max-width: 288px'>
+</script>
+
+<script id="mst_popover_content" type="x-tmpl-mustache">
+<P><SPAN class='gtm-popup-title'>{{name}}</SPAN><br> {{{content}}}</P>
+<P class="gtm-popup-edit-link"><A href="{{url_edit_image}}" target="_blank">Edit this image</A></P>
+</script>
+
+<script id="mst_popup_wrapper_reset" type="x-tmpl-mustache">
+<div id="popup" class="popup" title="Here is:"></div>
+</script>

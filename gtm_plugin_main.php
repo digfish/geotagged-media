@@ -5,7 +5,7 @@
  * Plugin URI: https://github.com/digfish/geotagged-media
  * Author: digfish
  * Author URI: https://github.com/digfish
- * Version: 0.2
+ * Version: 0.2.5
  * License: GPL2
  * Text Domain: gtm
  * Domain Path: digfish/gtm
@@ -81,7 +81,7 @@ function gtm_plugin_instantiate() {
 function gtm_frontend_init() {
 	add_action( 'wp_enqueue_scripts', 'gtm_frontend_scripts' );
 	add_shortcode( 'gtm_map', function ( $attrs ) {
-		require_once "gtm_tagged_media_page.php";
+		require_once "gtm_tagged_media_map_page.php";
 	} );
 	add_filter( 'body_class', function ( $body_classes ) {
 		$body_classes[] = 'gtm-body';
@@ -115,20 +115,23 @@ function gtm_frontend_scripts( $hook_suffix ) {
 	$mustache_js         = plugin_dir_url( __FILE__ ) . 'mustache/mustache-3.0.1.js';
 	$gtm_css             = plugin_dir_url( __FILE__ ) . 'gtm.css';
 	$gtm_js              = plugin_dir_url( __FILE__ ) . 'gtm.js';
+	$jqueryui_base_css = 'https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css';
 
 	wp_register_style( 'ol_css', $ol_css, array(), '5.3.0' );
 	wp_register_script( 'ol_js', $ol_js, array(), '5.3.0' );
-	wp_register_style( 'bootstrap_css', $bootstrap_css, '3.3.6' );
-	wp_register_style( 'bootstrap_css_theme', $bootstrap_css_theme, '3.3.6' );
+//	wp_register_style( 'bootstrap_css', $bootstrap_css, array(), '3.3.6' );
+//	wp_register_style( 'bootstrap_css_theme', $bootstrap_css_theme, array(), '3.3.6' );
+	wp_register_style('jqueryui_base_css',$jqueryui_base_css, array(), '1.12.1' );
 
-	wp_register_script( 'bootstrap_js', $bootstrap_js, array( 'jquery' ), '3.3.6' );
+//	wp_register_script( 'bootstrap_js', $bootstrap_js, array( 'jquery' ), '3.3.6' );
 	wp_register_script( 'mustache_js', $mustache_js, array(), '3.0.1' );
 	wp_register_style( 'gtm_css', $gtm_css );
 	wp_register_script( 'gtm_js', $gtm_js );
 
-	  wp_enqueue_style('wp-jquery-ui-dialog');
-	wp_enqueue_style( 'bootstrap_css' );
-	wp_enqueue_style('bootstrap_css_theme');
+	wp_enqueue_style('jqueryui_base_css');
+	//wp_enqueue_style('wp-jquery-ui-dialog');
+//	wp_enqueue_style( 'bootstrap_css' );
+//	wp_enqueue_style('bootstrap_css_theme');
 	wp_enqueue_style( 'ol_css' );
 	wp_enqueue_style( 'gtm_css' );
 
@@ -140,7 +143,7 @@ function gtm_frontend_scripts( $hook_suffix ) {
 
 	wp_add_inline_script('jquery-ui-tooltip','jQuery.widget.bridge(\'uitooltip\', jQuery.ui.tooltip);');
 
-	wp_enqueue_script( 'bootstrap_js','',array('jquery-ui-tooltip-bridge'));
+//	wp_enqueue_script( 'bootstrap_js','',array('jquery-ui-tooltip-bridge'));
 	wp_enqueue_script( 'mustache_js' , '',array('jquery-core'));
 	wp_enqueue_script( 'gtm_js','',array('ol_js') );
 	wp_enqueue_script( 'ol_js','',array('jquery-ui-tooltip-bridge') );
@@ -189,12 +192,12 @@ function gtm_add_settings_item() {
 	$menu_item_title    = 'Geotagged Media';
 	$capability         = 'administrator';
 	$menu_slug          = 'gtm-admin-options';
-	$callback           = 'gtm_options_admin_page';
+	$callback           = 'gtm_settings_admin_page';
 
 	add_options_page( $options_page_title, $menu_item_title, $capability, $menu_slug, $callback );
 }
 
-function gtm_options_admin_page() {
+function gtm_settings_admin_page() {
 
 	$gtm_options = get_option( 'gtm_options' );
 
@@ -246,7 +249,7 @@ function gtm_admin_scripts( $hook_suffix ) {
 	wp_register_style( 'gtm_css', $gtm_css );
 	wp_register_script( 'gtm_js', $gtm_js );
 	wp_enqueue_style( 'bootstrap_css' );
-	wp_enqueue_style( 'bootstrap_css_theme' );
+//	wp_enqueue_style( 'bootstrap_css_theme' );
 	wp_enqueue_style( 'ol_css' );
 	wp_enqueue_script( 'bootstrap_js' );
 	wp_enqueue_script( 'mustache_js' );
@@ -340,7 +343,7 @@ function gtm_dash_page_callback() {
 	}
 	switch ( $action ) {
 		case 'render_geotags':
-			require_once "gtm_tagged_media_page.php";
+			require_once "gtm_tagged_media_map_page.php";
 			break;
 		case 'marknew':
 			require_once "gtm_geomark.php";
@@ -818,6 +821,20 @@ add_action( 'wp_ajax_gtm_install_deps', function () {
 	}
 	wp_die();
 } );
+
+function ajax_gtm_get_mapsources_keys() {
+	$gtm_options = get_option('gtm_options');
+	header( 'Content-type: application/json' );
+	echo json_encode(array(
+		'key_bingmaps' => $gtm_options['key_bingmaps'],
+		'key_thunderforest' => $gtm_options['key_thunderforest']
+
+	));
+	wp_die();
+}
+
+add_action('wp_ajax_gtm_get_mapsources_keys','ajax_gtm_get_mapsources_keys' );
+add_action('wp_ajax_nopriv_gtm_get_mapsources_keys','ajax_gtm_get_mapsources_keys' );
 
 add_action( 'wp_ajax_gtm_geomark', function () {
 	$coordinates = $_REQUEST['coordinates'];

@@ -15,3 +15,6 @@ body.gtm-body {
 .gtm-popup-title {
     font-size-adjust: 1.1;
 }
+.gtm-popup-edit-link {
+    font-size-adjust: 0.8;
+}

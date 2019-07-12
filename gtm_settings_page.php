@@ -37,7 +37,12 @@
         <p><input type="checkbox" name="gtm_options[add_dashboard_geotagged_media_option]" value="true"><label>Add "
                 Geotagged Media" item to the the dashboard side menu ?</label></p>
 
-		<?php echo submit_button() ?>
+        <p><label>BingMaps Key<input type="text" name="gtm_options[key_bingmaps]" value="<?php echo $gtm_options['key_bingmaps'] ?>"></label></p>
+
+        <p><label> ThunderForest Key<input type="text" name="gtm_options[key_thunderforest]" value="<?php echo $gtm_options['key_thunderforest'] ?>"></label></p>
+
+
+        <?php echo submit_button() ?>
     </form>
 
 </div>
