@@ -185,6 +185,11 @@ function gtm_geo_dms2dec($fracs, $coord_ref = '')
     return $final;
 }
 
+/**
+ * generates html SCRIPT tags for a js library, along with all its dependencies
+ * @param $scripts_r an array with the registered name of the library (as used by wp_register_script)
+ * @return string SCRIPT tags for all the dependencies of the library
+ */
 function gtm_output_scripts_html($scripts_r)
 {
 

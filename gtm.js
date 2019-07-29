@@ -1,9 +1,11 @@
 function wp_media_link(link_text, image_post_id) {
-    return "<A href='/wp-admin/upload.php?item=" + image_post_id + "&mode=grid' target='_blank'>" + link_text + "</A>";
+    return "<A href='" + wp_media_url(image_post_id) + "' target='_blank'>" + link_text + "</A>";
 }
 
 function wp_media_url(image_post_id) {
-    return "/wp-admin/upload.php?item=" + image_post_id + "&mode=grid";
+    // return "/wp-admin/upload.php?item=" + image_post_id + "&mode=grid";
+
+    return "/wp-admin/post.php?post=" + image_post_id + "&action=edit";
 }
 
 function gtm_action_link(action, text, params) {
@@ -13,6 +15,10 @@ function gtm_action_link(action, text, params) {
         pkv.push(key + '=' + encodeURIComponent(val));
     }
     qstr = pkv.join('&');
+
+
+    //   return "<A href='/wp-admin/post.php?&action=' + action + (qstr ? ("&" + qstr) : "") + "' target='_blank'>" + text + "</A>";
+
     return "<A href='/wp-admin/upload.php?page=gtm&action=" + action + (qstr ? ("&" + qstr) : "") + "' target='_blank'>" + text + "</A>";
 }
 

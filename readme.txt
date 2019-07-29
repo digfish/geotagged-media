@@ -83,13 +83,15 @@ Because OpenLayers does not support it builtin in version 5. In version 3, there
 First version. Not applicable.
 
 == TODO ==
+* Store geodata in EXIF tags directly in files that don't have it (partially done) -> missing: overwrite on images that already possess the tags
+* Remove the the geotag from metadata stored in Wordpress (not from the file!)
+* Add parameters to the shortcode like sourcemaps, labels, or other form controls
+
+* Two or more maps in the same HTML stream does not work properly (need to replace HTML id's with classes)
+* The providers maps keys should stay on server and not be send to the client
+* Geomark manually must be done in a modal overlay instead of a new page (done for media list view)
+
 * Add an overlay icon to each photo in media library in grid mode
 * Filter on Media Library by if have metadata fields for camera or geolocation (partially done, not using camera)
 * Use [Leaflet Map Visualization Library](https://leafletjs.com/) on mobile devices instead of OpenLayers
-* Geomark manually must be done in a modal overlay instead of a new page (done for media list view)
-* Store geodata in EXIF tags directly in files that don't have it (partially done) -> missing: overwrite on images that already possess the tags
 * Show position on a map directly in the "edit media" details
-* Remove the the geotag from metadata stored in Wordpress (not from the file!)
-* Two or more maps in the same HTML stream does not work properly (need to replace HTML id's with classes)
-* The providers maps keys should stay on server and not be send to the client
-* Add parameters to the shortcode like sourcemaps, labels, or other form controls

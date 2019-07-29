@@ -19,8 +19,8 @@ $md = wp_get_attachment_metadata($post->ID);
 <script type="text/javascript">
     var post_id = <?=  $_REQUEST['post_id'] ?>;
 </script>
-
-<div id="map" class="gtm-map">
+<p>Click where the new place is</p>
+<div id="gtm-marker-map" class="gtm-map">
 </div>
 <div style="display:none">
     <!-- Popup -->

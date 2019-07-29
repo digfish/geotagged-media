@@ -36,7 +36,7 @@ jQuery(document).ready(function ($) {
 
 
     var map = new ol.Map({
-        target: 'map',
+        target: 'gtm-marker-map',
         layers: [
             new ol.layer.Tile({
                 source: new ol.source.OSM()

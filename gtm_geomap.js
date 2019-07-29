@@ -1,4 +1,4 @@
-function GtmGeomap() {
+function GtmGeomap(selector) {
 
 
     $ = jQuery;
@@ -9,6 +9,7 @@ function GtmGeomap() {
     this.totalMediaCount = -1;
     this.keyBingMaps = '';
     this.keyThunderForest = '';
+    this.selector = selector;
 
 
     // properties for geometric figures
@@ -48,7 +49,7 @@ function GtmGeomap() {
 
         console.log('>this init');
         this.map = new ol.Map({
-            target: 'map',
+            target: this.selector.replace('#', ''),
             layers: [
                 new ol.layer.Tile({
                     source: new ol.source.OSM()
@@ -58,6 +59,7 @@ function GtmGeomap() {
         //      console.log('getElement:',this.map.getTargetElement());
 
         var mapElem = this.map.getTargetElement();
+        console.log('targetElement', mapElem);
         $(mapElem).data('map', this);
         return this;
     };

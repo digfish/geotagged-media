@@ -13,7 +13,7 @@ d(array('form_fields' => $form_fields, 'post' => $post));
     //    var ajaxurl = "/wp-admin/admin-ajax.php";
 
     jQuery(document).ready(function ($) {
-        var geoMap = new GtmGeomap();
+        var geoMap = new GtmGeomap('#map');
         geoMap.init();
         geoMap.fetchData(ajaxurl + "?action=getcoord", {'post_id': <?php echo $post->ID ?>});
         console.log(geoMap);

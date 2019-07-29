@@ -458,10 +458,11 @@ function gtm_submitbox_misc_actions($post)
                 echo "<P>The image file as no EXIF tags in it</P><A href='upload.php?page=gtm&action=store_exif&media_id={$post->ID}'>Do you want to store the geometadata in the file?</A>";
             }
         } else {
-            $url_geomark = "/notmpl/gtm_geomark?post_id={$post->ID}";
-            echo "<P>There is no geotag data in this image!</P><A href=\"javascript:gtmOverlayModalUrl('$url_geomark')\" target='_blank'>Click to geotag this photo</A></P>";
+            echo "<P>There is no geotag data in this image!</P>";
         }
     }
+    $url_geomark = "/notmpl/gtm_geomark?post_id={$post->ID}";
+    echo "<A href=\"javascript:gtmOverlayModalUrl('$url_geomark')\" target='_blank'>Click to geotag this photo</A>";
 }
 
 function gtm_add_metadata_column($columns)
