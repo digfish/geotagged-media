@@ -6,3 +6,4 @@ essays
 bin
 tests/*
 composer.phar
+cache

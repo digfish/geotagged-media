@@ -67,8 +67,15 @@ Because OpenLayers does not support it builtin in version 5. In version 3, there
 ## Changelog 
 
 
+### 0.3.0 
+* Implemented categories and tags for Media
+* Implemented filter by category or tag
+* Shortcode now allows to filter geo tagged media on a map to category or tag
+
+
+
 ### 0.2.5 
-* Besides OSM, more four map sources are available: BingMaps, ESRI-XYZ, TileWMS, ThunderForest
+* Besides OSM, more four map sources are available: BingMaps, ESRI, TileWMS, ThunderForest
 
 
 ### 0.2.0 
@@ -106,4 +113,8 @@ First version. Not applicable.
 * Use [Leaflet Map Visualization Library](https://leafletjs.com/) on mobile devices instead of OpenLayers
 * Plugin view in backoffice: allow to access settings on a link close to the plugin entry
 * Geomark manually must be done in a modal overlay instead of a new page
-
+* Store geodata in EXIF tags directly in files that don't have it
+* Show position on a map directly in the "edit media" details
+* Turn the metadata information in the "Save box" in edit media details into a form, suppressing the form that's shown below the picture
+* Remove the geotag from metadata stored in Wordpress
+* Two or more maps in the same HTML stream does not work properly (need to replace HTML id's with classes)

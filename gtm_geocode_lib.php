@@ -2,11 +2,10 @@
 
 require_once "vendor/autoload.php";
 
-use Geocoder\Query\GeocodeQuery;
-use Geocoder\Query\ReverseQuery;
 use Geocoder\Provider\Nominatim\Nominatim;
-use Http\Adapter\Guzzle6\Client;
+use Geocoder\Query\ReverseQuery;
 use Geocoder\StatefulGeocoder;
+use Http\Adapter\Guzzle6\Client;
 
 /**
  * @param $coord_r assoc array of coordinates with the keys 'lat' and 'long'

@@ -13,8 +13,51 @@ body.gtm-body {
 }
 
 .gtm-popup-title {
-    font-size-adjust: 1.1;
+    font-size: 1.1em;
 }
 .gtm-popup-edit-link {
-    font-size-adjust: 0.8;
+    font-size: 0.8em;
+}
+
+.gtm-thumbnail-title {
+    font-size: 10px;
+}
+
+.gtm-library-filters {
+    display: inline-block;
+    padding-left: 5px;
+    padding-right: 5px;
+    margin-left: auto;
+}
+
+.gtm-library-filters > * {
+    display: inline;
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-top: 10px;
+}
+
+gtm-media-details-label {
+    display: inline-block;
+}
+
+form[name=gtm_settings_form] input[type=text].gtm-input {
+    width: 600px;
+}
+
+.misc-pub-section input {
+    width: 200px;
+}
+
+.gtm.input-label {
+    min-width: 150px;
+    display: inline-block;
+}
+
+.gtm_editable {
+    min-width: 100px;
+}
+
+.btn_geotag_edit {
+    max-width: 100px;
 }

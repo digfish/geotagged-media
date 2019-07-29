@@ -18,7 +18,7 @@ function gtm_action_link(action, text, params) {
 
 function mst_render(id,vars) {
     var tmpl_script = jQuery('head').find(id).html();
-    //console.log(tmpl_script);
+
     return Mustache.render(tmpl_script, vars);
 }
 
@@ -30,4 +30,51 @@ function mst_render_html(id,vars){
 
 function isAdmin() {
     return location.href.indexOf('wp-admin') > -1;
+}
+
+function gtmOverlayModalIframe(url) {
+    $('body').append(mst_render('#mst_overlay_modal_iframe', {url: url}));
+    _overlayModaljQueryUIdialog('#overlay_modal');
+}
+
+function _overlayModaljQueryUIdialog(selector) {
+    jQuery(selector).dialog({
+            width: 0.95 * document.body.clientWidth,
+            height: document.body.clientHeight,
+            modal: true
+        }
+    );
+}
+
+function gtmOverlayModal(html) {
+    jQuery('body').append(mst_render('#mst_overlay_modal', {html: html}));
+    _overlayModaljQueryUIdialog('#overlay_modal');
+}
+
+
+function initMustacheTemplates() {
+    jQuery.get("/wp-content/plugins/geotagged-media/gtm.mst", {}).success(function (response) {
+        console.log("Mustache templates file loaded!");
+        mustache_tmpl = jQuery.parseHTML(response, document, true);
+        jQuery('head').append(mustache_tmpl);
+    });
+}
+
+function gtmOverlayModalUrl(url) {
+    jQuery.get(url).success(function (resp) {
+        console.log('gtm_html_url response', resp);
+        gtmOverlayModal(resp);
+    });
+}
+
+function initDismissableButtonAction() {
+
+    $(document).on('click', '#gtm_activation_notice .notice-dismiss', function (evt) {
+        console.log('Clicked dismiss!');
+        $.get(ajaxurl + "?action=dismiss_activation_notice")
+            .success(function (response) {
+                console.log('dismisson_activation_notice', response);
+            });
+
+    });
 }

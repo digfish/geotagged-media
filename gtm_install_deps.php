@@ -13,8 +13,8 @@ function gtm_composer_exec( $options ) {
 	putenv( "COMPOSER_HOME=" . getcwd() );
 	ob_start();
 	system( $full_cmdline . " 2>&1", $exit_code );
-;
-	$buffer .= ob_get_clean();
+
+    $buffer .= ob_get_clean();
 
 	$buffer .= "'";
 	unlink( __DIR__ . '/.htaccess' );

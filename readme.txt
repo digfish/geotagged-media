@@ -49,8 +49,17 @@ Because OpenLayers does not support it builtin in version 5. In version 3, there
 
 == Changelog ==
 
+= 0.3.0 =
+* Implemented categories and tags for Media
+* Implemented filter by category or tag
+* Shortcode now allows to filter geo tagged media on a map to category or tag
+* Edit the media metadata in  "edit media details" view
+* Media library list mode, filter images with or without geotag
+* Store the geotags directly in the image file as EXIF tags
+
+
 = 0.2.5 =
-* Besides OSM, more four map sources are available: BingMaps, ESRI-XYZ, TileWMS, ThunderForest
+* Besides OSM, more four map sources are available: BingMaps, ESRI, TileWMS, ThunderForest
 
 = 0.2.0 =
 * Hability to rename photos directly when uploading them using reverse geocoding
@@ -74,11 +83,13 @@ Because OpenLayers does not support it builtin in version 5. In version 3, there
 First version. Not applicable.
 
 == TODO ==
-* Add an overlay icon to media library in grid mode
-* Filter on Media Library by if have metadata fields for camera or geolocation
-* Clicking on the popup in the geomap it will not bring the attachment details form in the media library in grid mode
-* composer must be installed not by default, but ONLY if the user wants to use geocoding
+* Add an overlay icon to each photo in media library in grid mode
+* Filter on Media Library by if have metadata fields for camera or geolocation (partially done, not using camera)
 * Use [Leaflet Map Visualization Library](https://leafletjs.com/) on mobile devices instead of OpenLayers
-* Plugin view in backoffice: allow to access settings on a link close to the plugin entry
-* Geomark manually must be done in a modal overlay instead of a new page
-
+* Geomark manually must be done in a modal overlay instead of a new page (done for media list view)
+* Store geodata in EXIF tags directly in files that don't have it (partially done) -> missing: overwrite on images that already possess the tags
+* Show position on a map directly in the "edit media" details
+* Remove the the geotag from metadata stored in Wordpress (not from the file!)
+* Two or more maps in the same HTML stream does not work properly (need to replace HTML id's with classes)
+* The providers maps keys should stay on server and not be send to the client
+* Add parameters to the shortcode like sourcemaps, labels, or other form controls

@@ -10,6 +10,28 @@
 <IMG src='/wp-content/uploads/{{thumbnail_src}}' style='width: 200px; max-width: 288px'>
 </script>
 
+<!-- img for a thumbnail in the "all-photos" map -->
+<script id="mst_thumbnail_image" type="x-tmpl-mustache">
+<IMG src='/wp-content/uploads/{{thumbnail_src}}' style='width: 40px; max-width: 58px'>
+</script>
+
+<!-- container for the popup in the "all-phots" map-->
+<script id="mst_thumbnail_popup" type="x-tmpl-mustache">
+<div id="{{id}}" class="popup" title=""></div>
+</script>
+
+<!--  content of popup in "all-photos" map -->
+<script id="mst_thumbnail_content" type="x-tmpl-mustache">
+    <P><SPAN class='gtm-thumbnail-title'>{{name}}</SPAN><br> {{{content}}}</P>
+</script>
+
+
+<!--  content of popup with only thumbnail in "all-photos" map -->
+<script id="mst_only_thumbnail_content" type="x-tmpl-mustache">
+    <P>{{{content}}}</P>
+</script>
+
+
 <script id="mst_popover_content" type="x-tmpl-mustache">
 <P><SPAN class='gtm-popup-title'>{{name}}</SPAN><br> {{{content}}}</P>
 <P class="gtm-popup-edit-link"><A href="{{url_edit_image}}" target="_blank">Edit this image</A></P>
@@ -17,4 +39,20 @@
 
 <script id="mst_popup_wrapper_reset" type="x-tmpl-mustache">
 <div id="popup" class="popup" title="Here is:"></div>
+</script>
+
+<script id="mst_overlay_modal_iframe" type="x-tmpl-mustache">
+<div id="overlay_modal" class="overlay modal">
+<iframe src="{{url}}" width="100%" height="100%"></iframe>
+</div>
+</script>
+
+<script id="mst_overlay_modal" type="x-tmpl-mustache">
+<div id="overlay_modal" class="overlay modal">
+ {{{html}}}
+</div>
+</script>
+
+<script id="mst_notice" type="x-tmpl-mustache">
+<DIV class='updated notice-success is-dismissable'>{{{message}}}</DIV>
 </script>

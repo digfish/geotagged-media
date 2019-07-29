@@ -1,4 +1,5 @@
 // js code for geomark
+// FIXME zoom level must be closer
 
 jQuery(document).ready(function ($) {
 
@@ -46,7 +47,7 @@ jQuery(document).ready(function ($) {
         ],
         view: new ol.View({
             center: ol.proj.fromLonLat([-7.59, 37.13]),
-            zoom: 4
+            zoom: 7
         })
     });
 

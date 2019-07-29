@@ -1,7 +1,6 @@
 <?php
 // @digfish: the form to configure Geotagged media plugin
 
-//d($gtm_options);
 ?>
 <style type="text/css">
     #geocode_on_upload_details {
@@ -18,7 +17,7 @@
         Fill the fields with the configuration for Geotagged Media Plugin
     </p>
 
-    <form method="post" action="options-general.php?page=gtm-admin-options">
+    <form name="gtm_settings_form" method="post" action="options-general.php?page=gtm-admin-options">
         <p><input type="checkbox" name="gtm_options[geocode_on_upload]" value="true"><label
                     for="gtm_options[geocode_on_upload]">Assign names automtically to photos on upload !?</label></p>
         <div id="composer_init_section">
@@ -36,10 +35,18 @@
                 fields form !? </label></p>
         <p><input type="checkbox" name="gtm_options[add_dashboard_geotagged_media_option]" value="true"><label>Add "
                 Geotagged Media" item to the the dashboard side menu ?</label></p>
+        <p><label><input type="checkbox" name="gtm_options[media_library_gtm_filters]" value="true">Add filters on media
+                library to allow to select geotagged and not geotagged media ?</label></p>
 
-        <p><label>BingMaps Key<input type="text" name="gtm_options[key_bingmaps]" value="<?php echo $gtm_options['key_bingmaps'] ?>"></label></p>
+        <p><label class="gtm input-label">BingMaps Key</label><input type="text" name="gtm_options[key_bingmaps]"
+                                                                     class="gtm-input"
+                                                                     value="<?php echo $gtm_options['key_bingmaps'] ?>">
+        </p>
 
-        <p><label> ThunderForest Key<input type="text" name="gtm_options[key_thunderforest]" value="<?php echo $gtm_options['key_thunderforest'] ?>"></label></p>
+        <p><label class="gtm input-label"> ThunderForest Key</label><input class="gtm-input" type="text"
+                                                                           name="gtm_options[key_thunderforest]"
+                                                                           value="<?php echo $gtm_options['key_thunderforest'] ?>">
+        </p>
 
 
         <?php echo submit_button() ?>
@@ -48,11 +55,6 @@
 </div>
 <script type="text/javascript">
 
-/*    function mst_render(id,vars) {
-       var tmpl_script = $('#mst_cntx').find(id).html();
-       console.log(tmpl_script);
-       return Mustache.render(tmpl_script, vars);
-    }*/
 
     jQuery(document).ready(function ($) {
 
@@ -69,10 +71,10 @@
             ajaxurl + "?action=gtm_get_options_values",
             {}).success(
             function (response) {
-                console.log("GTM options", response);
+                //               console.log("GTM options", response);
                 gtm_options = response;
                 $.each(gtm_options, function (option_name, option_value) {
-                    console.log(option_name, option_value);
+                    //                   console.log(option_name, option_value);
                     if (option_value == 'true') {
                         $("[type=checkbox][name=gtm_options\\[" + option_name + "\\]]").attr('checked', 'yes');
                     }
@@ -84,11 +86,11 @@
             evt.preventDefault();
             $.get(
                 ajaxurl + "?action=gtm_download_composer", {}).success(function (response) {
-                console.log(response);
+//                console.log(response);
                 $('#download_composer_response').html(mst_render('#mst_simple_paragraph',{'text':response}));
                 $('#download_composer_response').show();
                 //$('#composer_init_section').trigger('init_vendor');
-                $('#composer_init_section').triggerHandler('click');;
+                $('#composer_init_section').triggerHandler('click');
             });
 
         });
@@ -97,13 +99,12 @@
 
 
         $('#composer_init_section').on('click','#btn_composer_init_vendor', function (evt) {
-            console.log('clicked',this)
+            //          console.log('clicked',this)
             evt.preventDefault();
             $('#btn_composer_init_vendor').parent().append(mst_render('#mst_simple_paragraph',{'text':"Downloading dependencies . . . Please wait . . ."}));
             $.get(ajaxurl + "?action=gtm_install_deps", {}).success(function (response) {
-                console.log(response);
+                //              console.log(response);
                 $('#btn_composer_init_vendor').parent().append(mst_render('#mst_textarea_console',{'text': response}));
-                //$('#btn_composer_init_vendor').parent().append("<TEXTAREA style='font-family: monospace; width: 800px; height: 300px' >" + response + "</TEXTAREA>");
 
                 $('#btn_composer_init_vendor').parent().append(mst_render('#mst_simple_paragraph',{'text':"Dependencies installed with success!"}));
             });
@@ -114,10 +115,10 @@
         $('[name=gtm_options\\[geocode_on_upload\\]]').on('click', function (evt) {
             $this = $(this);
             if ($this.attr('checked')) {
-                console.log('Is checked!');
+                //           console.log('Is checked!');
                 $('#geocode_on_upload_details').show();
             } else {
-                console.log('Is not checked!');
+                //             console.log('Is not checked!');
                 $('#geocode_on_upload_details').hide();
 
             }
