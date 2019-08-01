@@ -46,10 +46,17 @@
         <p><label class="gtm input-label"> ThunderForest Key</label><input class="gtm-input" type="text"
                                                                            name="gtm_options[key_thunderforest]"
                                                                            value="<?php echo $gtm_options['key_thunderforest'] ?>">
+
+        </p>
+
+        <p><label class="gtm input-label"> MapBox Key</label><input class="gtm-input" type="text"
+                                                                    name="gtm_options[key_mapbox]"
+                                                                    value="<?php echo $gtm_options['key_mapbox'] ?>">
+
         </p>
 
 
-        <?php echo submit_button() ?>
+		<?php echo submit_button() ?>
     </form>
 
 </div>
@@ -60,9 +67,9 @@
 
         var mustache_tmpl = "";
         // load mustache js templates
-        $.get("<?php echo plugin_dir_url(__FILE__) ?>/gtm.mst",{}).success(function(response) {
+        $.get("<?php echo plugin_dir_url( __FILE__ ) ?>/gtm.mst", {}).success(function (response) {
             console.log("Mustache templates file loaded!");
-            mustache_tmpl = jQuery.parseHTML(response,document,true);
+            mustache_tmpl = jQuery.parseHTML(response, document, true);
             $('head').append(mustache_tmpl);
 
         });
@@ -87,7 +94,7 @@
             $.get(
                 ajaxurl + "?action=gtm_download_composer", {}).success(function (response) {
 //                console.log(response);
-                $('#download_composer_response').html(mst_render('#mst_simple_paragraph',{'text':response}));
+                $('#download_composer_response').html(mst_render('#mst_simple_paragraph', {'text': response}));
                 $('#download_composer_response').show();
                 //$('#composer_init_section').trigger('init_vendor');
                 $('#composer_init_section').triggerHandler('click');
@@ -96,17 +103,15 @@
         });
 
 
-
-
-        $('#composer_init_section').on('click','#btn_composer_init_vendor', function (evt) {
+        $('#composer_init_section').on('click', '#btn_composer_init_vendor', function (evt) {
             //          console.log('clicked',this)
             evt.preventDefault();
-            $('#btn_composer_init_vendor').parent().append(mst_render('#mst_simple_paragraph',{'text':"Downloading dependencies . . . Please wait . . ."}));
+            $('#btn_composer_init_vendor').parent().append(mst_render('#mst_simple_paragraph', {'text': "Downloading dependencies . . . Please wait . . ."}));
             $.get(ajaxurl + "?action=gtm_install_deps", {}).success(function (response) {
                 //              console.log(response);
-                $('#btn_composer_init_vendor').parent().append(mst_render('#mst_textarea_console',{'text': response}));
+                $('#btn_composer_init_vendor').parent().append(mst_render('#mst_textarea_console', {'text': response}));
 
-                $('#btn_composer_init_vendor').parent().append(mst_render('#mst_simple_paragraph',{'text':"Dependencies installed with success!"}));
+                $('#btn_composer_init_vendor').parent().append(mst_render('#mst_simple_paragraph', {'text': "Dependencies installed with success!"}));
             });
 
         });

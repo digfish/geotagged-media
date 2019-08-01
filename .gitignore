@@ -7,3 +7,4 @@ bin
 tests/*
 composer.phar
 cache
+.fuse*

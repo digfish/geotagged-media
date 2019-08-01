@@ -56,3 +56,10 @@
 <script id="mst_notice" type="x-tmpl-mustache">
 <DIV class='updated notice-success is-dismissable'>{{{message}}}</DIV>
 </script>
+
+<script id="mst_popup_content" type="x-tmpl-mustache">
+<STRONG>lat:</STRONG> {{lat}} <BR/>
+<STRONG>long:</STRONG> {{long}}<BR/>
+<P>Do to you want to set this place as the location tag for the image !?</P>
+<BUTTON id='geomark'>yes</BUTTON>
+</script>
