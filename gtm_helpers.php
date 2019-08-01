@@ -360,3 +360,66 @@ function gtm_add_metadata_field(&$postObj)
 
     return $postObj;
 }
+
+function gtm_category_names_for_geotagged_photos()
+{
+    global $wpdb;
+
+    $results = $wpdb->get_results("select wp_terms.name, wp_terms.slug from wp_term_taxonomy,wp_term_relationships, wp_posts, wp_terms where wp_term_relationships.object_id = wp_posts.ID and post_type='attachment' and wp_term_taxonomy .term_taxonomy_id = wp_term_relationships.term_taxonomy_id and wp_terms.term_id = wp_term_taxonomy.term_id group by wp_terms.name ");
+
+    $categories = array();
+
+    foreach ($results as $result) {
+        $categories[$result->slug] = $result->name;
+    }
+
+    //d($categories);
+
+    return $categories;
+}
+
+/**
+ * fix broken image metadata so that thumbs can be regenerated
+ * @see https://snippets.webaware.com.au/snippets/repair-wordpress-image-meta/
+ */
+function gtm_repair_image_meta($image_post_id) {
+    global $wpdb;
+
+    $image_filepath = get_attached_file($image_post_id);
+    d($image_filepath);
+    $image_filename = basename($image_filepath);
+        $meta = wp_get_attachment_metadata($image_post_id);
+    //    if (!$meta) {
+            $media_upload_dir = wp_get_upload_dir();
+
+                    d($media_upload_dir);
+   //         if (!empty($file_filepath)) {
+                $info = getimagesize($image_filepath);
+                $meta = array (
+                    'width' => $info[0],
+                    'height' => $info[1],
+                    'hwstring_small' => "height='{$info[1]}' width='{$info[0]}'",
+                    'file' => $media_upload_dir['subdir'] . "/$image_filename",
+                    // $media_upload_dir['path'] . '/' . $image_filename ,
+                    'sizes' => array(),         // thumbnails etc.
+                    'image_meta' => array(),    // EXIF data
+                );
+                d($meta);
+                update_post_meta($image_post_id, '_wp_attachment_metadata', $meta);
+     //       }
+  //      }
+}
+
+function gtm_media_image_file($image_post_id) {
+
+    $image_postdata = get_post($image_post_id);
+
+    $image_metadata = wp_get_attachment_metadata($image_post_id);
+    $media_upload_dir = wp_get_upload_dir();
+    $absfilepath =  $media_upload_dir['basedir'] .'/'. $image_metadata['file'];
+
+               d($absfilepath);
+
+    return $absfilepath;
+
+}

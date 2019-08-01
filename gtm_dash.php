@@ -266,12 +266,11 @@ function gtm_settings_admin_page()
         if (!empty($_POST['gtm_options'])) {
             $gtm_options = $_POST['gtm_options'];
             update_option('gtm_options', $gtm_options);
-            foreach ($gtm_options as $name => $value) {
-            }
         }
     }
 
     update_user_meta(get_current_user_id(), 'gtm_first_configure', true);
+    $gtm_options['key_mapbox'] = 'pk.eyJ1IjoiZGlnZmlzaCIsImEiOiJjanlycmt4b2QwZDcxM2JxeXhkcmQxaThrIn0.XgtlZb4MK9_kbMhwPI0qCw';
     require_once "gtm_settings_page.php";
 }
 
@@ -292,32 +291,48 @@ function gtm_admin_scripts($hook_suffix)
     $ol_js = plugin_dir_url(__FILE__) . 'ol/ol-5.3.0.js';
     wp_register_style('ol_css', $ol_css, array(), '5.3.0');
     wp_register_script('ol_js', $ol_js, array(), '5.3.0');
-    wp_enqueue_script('ol_js');
+   // wp_enqueue_script('ol_js');
 //	}
 
     $bootstrap_css = plugin_dir_url(__FILE__) . 'bootstrap/bootstrap.css';
     $bootstrap_css_theme = plugin_dir_url(__FILE__) . 'bootstrap/bootstrap-theme.css';
     $bootstrap_js = plugin_dir_url(__FILE__) . 'bootstrap/bootstrap-3.3.6.min.js';
-    $gtm_css = plugin_dir_url(__FILE__) . 'gtm.css';
+
+	$leaflet_js = plugin_dir_url(__FILE__) . "leaflet/leaflet.js";
+    $leaflet_css = plugin_dir_url(__FILE__) ."leaflet/leaflet.css";
+
+	$gtm_css = plugin_dir_url(__FILE__) . 'gtm.css';
     $gtm_js = plugin_dir_url(__FILE__) . 'gtm.js';
     $gtm_jquery_commons_js = plugin_dir_url(__FILE__) . 'gtm.jquery.commons.js';
     $mustache_js = plugin_dir_url(__FILE__) . 'mustache/mustache-3.0.1.js';
+
     $gtm_geomap_js = plugin_dir_url(__FILE__) . "gtm_geomap.js";
+	$gtm_geomap_leaflet_js = plugin_dir_url(__FILE__) . "gtm_geomap_leaflet.js";
+
     wp_register_style('bootstrap_css', $bootstrap_css, '3.3.6');
     wp_register_style('bootstrap_css_theme', $bootstrap_css_theme, '3.3.6');
+    wp_register_style('leaflet_css',$leaflet_css);
     wp_register_script('bootstrap_js', $bootstrap_js, array('jquery'), '3.3.6');
     wp_register_script('mustache_js', $mustache_js, array(), '3.0.1');
-    wp_register_style('gtm_css', $gtm_css);
+	wp_register_script('leaflet_js',$leaflet_js);
+	wp_register_style('gtm_css', $gtm_css);
     wp_register_script('gtm_js', $gtm_js);
     wp_register_script("gtm_geomap_js", $gtm_geomap_js, array('ol_js'));
-    wp_enqueue_style('bootstrap_css');
+    wp_register_script("gtm_geomap_leaflet_js", $gtm_geomap_leaflet_js, array('leaflet_js'));
+
+	wp_register_script("gtm_geomap_js", $gtm_geomap_js, array('ol_js'));
+	wp_enqueue_style('bootstrap_css');
 //  wp_enqueue_style( 'bootstrap_css_theme' );
     wp_enqueue_style('ol_css');
+    wp_enqueue_style('leaflet_css');
     wp_enqueue_style('gtm_css');
     wp_enqueue_script('bootstrap_js');
     wp_enqueue_script('mustache_js');
+    wp_enqueue_script('leaflet_js');
     wp_enqueue_script('gtm_js');
-    wp_enqueue_script('gtm_geomap_js');
+ //   wp_enqueue_script('gtm_geomap_js');
+	wp_enqueue_script('gtm_geomap_leaflet_js');
+
     wp_add_inline_script('gtm_js', 'initMustacheTemplates()');
     if (empty($_REQUEST['action'])) {
         wp_add_inline_script('ol_js', file_get_contents(plugin_dir_path(__FILE__) . 'gtm_footer_map_scripts.js'));
@@ -339,11 +354,11 @@ function gtm_add_media_menu_item()
 {
 
     $item_title = 'Geotagged media';
-    add_media_page($item_title, $item_title, 'administrator', GTM_TEXT_DOMAIN, 'gtm_dash_page_callback', true);
+    add_media_page($item_title, $item_title, 'administrator', GTM_TEXT_DOMAIN, 'gtm_dash_callback', true);
     //add_menu_page( WPCM_PLUGIN_NAME, WPCM_PLUGIN_NAME, 'administrator', WPCM_TEXT_DOMAIN, 'wpcm_dash_page', 'dashicons-layout', 2 )
 }
 
-function gtm_dash_page_callback()
+function gtm_dash_callback()
 {
 
     $action = @$_REQUEST['action'];
@@ -357,11 +372,33 @@ function gtm_dash_page_callback()
         case 'marknew':
             require_once "gtm_geomark.php";
             break;
+        case 'read_exif':
+            $media_id = @$_REQUEST['media_id'];
+            gtm_repair_image_meta($media_id);
+            $image_metadata = wp_get_attachment_metadata($media_id);
+            debug('read_exif image_metadata',$image_metadata);
+            $imgfilepath = gtm_media_image_file($media_id);
+            debug('read_exif imagefilepath',[$imgfilepath, file_exists( $imgfilepath)]);;
+
+            $image_metadata['image_meta'] = gtm_extract_exif($image_metadata['image_meta'],$imgfilepath);
+            debug('read_exif image_metadata',$image_metadata);
+            wp_update_attachment_metadata( $media_id, $image_metadata );
+            debug('read exif image metadata after update',wp_get_attachment_metadata( $media_id));
+            header("Location: post.php?post=$media_id&action=edit");
+
+            break;
 
         case 'store_exif':
             $media_id = @$_REQUEST['media_id'];
             require_once "gtm_store_exif.php";
             gtm_store_exif($media_id);
+            break;
+        case 'delete_exif':
+            $media_id = @$_REQUEST['media_id'];
+            require_once "gtm_delete_exif.php";
+            gtm_delete_attachment_metadata($media_id);
+            echo "<p>Click here to <A href='post.php?post=$media_id&action=edit'>return to the Edit media panel</A></p>";
+
             break;
         case 'media_new_title':
             $media_id = @$_REQUEST['media_id'];
@@ -444,7 +481,7 @@ function gtm_submitbox_misc_actions($post)
             $street_name = trim($toks[0]);
             echo gtm_gmaps_link($lat_dec, $long_dec);
             //d( $image );
-            echo "<P class='misc-pub-section'> <A href='upload.php?page=gtm&action=media_new_title&media_id={$post->ID}&new_title=$street_name'>Do you want to change the title of this picture to '$revgeocode_compl' ?</P>";
+            echo "<P class='misc-pub-section'> <A href='upload.php?page=gtm&action=media_new_title&media_id={$post->ID}&new_title=$street_name'>Change the title of this picture to '$revgeocode_compl'?</A></P>";
 
             $media_upload_dir = wp_get_upload_dir();
             $absfilepath = $media_upload_dir['basedir'] . "/" . $image['file'];
@@ -455,14 +492,22 @@ function gtm_submitbox_misc_actions($post)
 
             //           d($gtm_has_file_exif_out);
             if ($gtm_has_file_exif_out == false) {
-                echo "<P>The image file as no EXIF tags in it</P><A href='upload.php?page=gtm&action=store_exif&media_id={$post->ID}'>Do you want to store the geometadata in the file?</A>";
+                echo "<P><strong>The image file as no EXIF tags</strong></P>";
+            } else {
+            	echo "<li><strong>The file has EXIF geotag.</strong><A href='upload.php?page=gtm&action=delete_exif&media_id={$post->ID}'>Delete the EXIF tag from the Wordpress DB</A></li>";
             }
         } else {
-            echo "<P>There is no geotag data in this image!</P>";
+            echo "<P>There is no geometadata data for this image!</P>";
         }
     }
+	echo "<li><A href='upload.php?page=gtm&action=store_exif&media_id={$post->ID}'>Store  geometadata as EXIF tags in image file</A></li>";
     $url_geomark = "/notmpl/gtm_geomark?post_id={$post->ID}";
-    echo "<A href=\"javascript:gtmOverlayModalUrl('$url_geomark')\" target='_blank'>Click to geotag this photo</A>";
+    echo "<li><A href=\"javascript:gtmOverlayModalUrl('$url_geomark')\" target='_blank'>Click to geotag this photo</A></li>";
+
+    //if (gtm_has_file_exif(gtm_media_image_file($post->ID))) {
+    echo "<li><A href='upload.php?page=gtm&action=read_exif&media_id={$post->ID}'>Extract metadata from the EXIF tags of image file to Wordpress DB</A></li>";
+   // }
+
 }
 
 function gtm_add_metadata_column($columns)
@@ -480,17 +525,17 @@ function gtm_add_metadata_column($columns)
 
 // FIXME function is not working properly in the media gallery, returns true or false if the media has geotag
 
-function gtm_is_metadata_empty($r)
+function gtm_is_metadata_empty($image_metadata)
 {
 
-    $md = @$r['image_meta'];
+    $md = @$image_metadata['image_meta'];
     if (empty($md)) {
         return true;
     }
 
     foreach ($md as $k => $item) {
         if (is_string($item)) {
-            if (0 == $item || strlen($item) == 0) {
+            if ("0" == $item || strlen($item) == 0) {
                 continue;
             } else {
                 return false;

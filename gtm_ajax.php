@@ -70,7 +70,8 @@ function ajax_gtm_get_mapsources_keys()
     header('Content-type: application/json');
     echo json_encode(array(
         'key_bingmaps' => $gtm_options['key_bingmaps'],
-        'key_thunderforest' => $gtm_options['key_thunderforest']
+        'key_thunderforest' => $gtm_options['key_thunderforest'],
+        'key_mapbox' => $gtm_options['key_mapbox']
 
     ));
     wp_die();
@@ -104,10 +105,14 @@ add_action('wp_ajax_gtm_geomark', function () {
 add_action('wp_ajax_getcoord', function () {
     header('Content-type: application/json');
     $image_md = wp_get_attachment_metadata($_REQUEST['post_id']);
-    $md = $image_md['image_meta'];
-    $lat_dec = gtm_geo_dms2dec($md['latitude'], $md['latitude_ref']);
-    $long_dec = gtm_geo_dms2dec($md['longitude'], $md['longitude_ref']);
-    debug(__METHOD__, array($lat_dec, $long_dec));
-    echo json_encode([$long_dec, $lat_dec]);
+    if (empty($image_md['image_meta'])) {
+        echo json_encode('');
+    } else {
+        $md = $image_md['image_meta'];
+        $lat_dec = gtm_geo_dms2dec($md['latitude'], $md['latitude_ref']);
+        $long_dec = gtm_geo_dms2dec($md['longitude'], $md['longitude_ref']);
+        debug(__METHOD__, array($lat_dec, $long_dec));
+        echo json_encode([$long_dec, $lat_dec]);
+    }
     wp_die();
 });

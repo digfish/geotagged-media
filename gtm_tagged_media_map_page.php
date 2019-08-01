@@ -6,24 +6,6 @@ if (isset($category)) {
     echo "<script type='text/javascript'>var category = '$category' ;</script>";
 }
 
-function gtm_category_names_for_geotagged_photos()
-{
-    global $wpdb;
-
-    $results = $wpdb->get_results("select wp_terms.name, wp_terms.slug from wp_term_taxonomy,wp_term_relationships, wp_posts, wp_terms where wp_term_relationships.object_id = wp_posts.ID and post_type='attachment' and wp_term_taxonomy .term_taxonomy_id = wp_term_relationships.term_taxonomy_id and wp_terms.term_id = wp_term_taxonomy.term_id group by wp_terms.name ");
-
-    $categories = array();
-
-    foreach ($results as $result) {
-        $categories[$result->slug] = $result->name;
-    }
-
-    //d($categories);
-
-    return $categories;
-}
-
-
 $categories = gtm_category_names_for_geotagged_photos();
 ?>
 <H1>Geotagged media</H1>

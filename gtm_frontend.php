@@ -1,16 +1,35 @@
 <?php
+
+
+$GLOBALS['available_sources'] = array(
+    'OSM','BingMaps','ESRI-XYZ','TileWMS','ThunderForest','Google'
+);
+
 function gtm_frontend_init()
 {
+
     add_action('wp_enqueue_scripts', 'gtm_frontend_scripts');
     add_shortcode('gtm_map', function ($shortcode_attrs) {
 
-        //wp_add_inline_script ("gtm_js","var category = \'$category\' ;");
-        //echo "<script type='javascript'>var category = \'$category\'</script>" ;
-        debug('$shortcode_attrs', $shortcode_attrs);
-        $category = $shortcode_attrs['category'];
-        //  	debug('category',$category);
-        require_once "gtm_tagged_media_map_page.php";
+        global $available_sources;
+
+        $category = array_key_exists('category', $shortcode_attrs)? $shortcode_attrs['category'] : 'all';
+        d($category);
+
+        $using_sources = $available_sources;
+        if (  array_key_exists('sources',$shortcode_attrs) && $shortcode_attrs['sources'] != 'all' ) {
+
+            $declared_sources = preg_split('/,/',$shortcode_attrs['sources']);
+            $using_sources = array_intersect($declared_sources,$available_sources);
+        };
+        d($using_sources);
+
+        require_once "gtm_frontend_map.php";
     });
+
+
+
+
     add_filter('body_class', function ($body_classes) {
         $body_classes[] = 'gtm-body';
 

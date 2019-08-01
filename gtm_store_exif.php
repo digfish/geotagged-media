@@ -18,10 +18,10 @@ function gtm_split_coord_tokens($coord)
     return preg_split("/\//", $coord);
 }
 
-function gtm_store_exif($post_id)
+function gtm_store_exif($media_id)
 {
 
-    $postmd = wp_get_attachment_metadata($post_id);
+    $postmd = wp_get_attachment_metadata($media_id);
 
 //var_dump($postmd);
     $imagemd = $postmd['image_meta'];
@@ -36,7 +36,7 @@ function gtm_store_exif($post_id)
     $jpeg = new PelJpeg($imagefilename);
 
     $exif = $jpeg->getExif();
-    if (!$exif) { // there is no EXIF, so we'll create one!
+ //   if (!$exif) { // there is no EXIF, so we'll create one!
 
         $exif = new PelExif();
         $jpeg->setExif($exif);
@@ -92,10 +92,12 @@ function gtm_store_exif($post_id)
         file_put_contents($imagefilename, $jpeg->getBytes());
         echo "New geotagged file is $imagefilename";
 
-    } else { // file already has exif, update it!
+   /* } else { // file already has exif, update it!
 
         echo "<h3>The image already has geotags!</h3>";
-    }
+    }*/
+
+    echo "<h3>Click here to <A href='post.php?post=$media_id&action=edit'>return to the edit media</A></h3>";
 }
 
 
