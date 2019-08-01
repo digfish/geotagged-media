@@ -1,3 +1,4 @@
+
 var GtmGeomap = function (selector,library) {
 
     $ = jQuery;
@@ -47,13 +48,6 @@ var GtmGeomap = function (selector,library) {
         mapElem = $(this.selector).get();
         $(mapElem).data('map', this);
 
-        $(this.map).on('click', function (evt, mapObj) {
-            console.log('map object click!', evt);
-            console.log('mapObj', this);
-            geoMap = $(mapElem).data('map');
-            console.log('geoMap', geoMap);
-            geoMap.onClick(evt.originalEvent);
-        });
 
         //map = this;
         return this;
@@ -62,20 +56,24 @@ var GtmGeomap = function (selector,library) {
     this.fetchData = function (url, params) {
 
         $.get(url, params).success(function (response) {
-            var point = [response[1],response[0]];
             console.log('>fecthedData', response);
             geoMap = $('#map').data('map');
            // $('#map').trigger('dataFetched', [response]);
             onDataFetched(response).then(function(map) {
                 geoMap.processData(map);
             });
-            geoMap.coordinates = point;
             console.log('fetchedData geoMap', geoMap);
             $('#map').data('map',geoMap);
         });
 
 
     };
+
+
+    this.onClick = function (originalEvt) {
+        console.log('!this on.Click()! originalEvt = ', originalEvt);
+    };
+
 
     function grabMapSourceKeys() {
         geoMap = $('#map').data('map');
@@ -129,95 +127,66 @@ var GtmGeomap = function (selector,library) {
         return deferred.promise();
     }
 
-    $('#map').on('dataProcessed', function (evt,point) {
+    $(this.selector).on('dataProcessed', function (evt, point) {
         console.log('triggered dataProcessed');
         geoMap = $(this).data('map');
-        grabCoordinates(geoMap,point);
         geoMap.show();
     });
 
 
     this.processData = function (data) {
         console.log('>mapProcessData()', data);
-
         $('#map').trigger('dataProcessed',[point]);
     };
 
     this.show = function () {
-
         console.log('>this show');
         $(this.selector).trigger('afterShow', this);
 
     };
 
 
-    this.onClick = function (originalEvt) {
-        console.log('map click original', originalEvt);
-        //var geoMap = $(this).data('map');
-        console.log('geoMap', this);
-        //$(geoMap.map).trigger('click',geoMap);
-        var popupEl = geoMap.popup.getElement();
-        console.log('popupEl', popupEl);
-        console.log('evt.coordinate', originalEvt.coordinate);
-//        this.popup.setPosition(originalEvt.coordinate);
-        $(popupEl).popover('destroy');
-//        var coord = ol.proj.transform(originalEvt.coordinate, 'EPSG:3857', 'EPSG:4326');
-        console.log('coord after transform', coord);
-        $(popupEl).popover({
-            placement: 'auto',
-            animation: true,
-            html: true,
-            content:  mst_render(mst_popup_content,{lat: coord[1],long: coord[0]} )
-        });
-        onShowPopup(popupEl);
-        console.log('popupEl after popover',popupEl);
-  //      layers = this.map.getLayers().getArray();
-        console.log('layers',layers);
-  //      var features = layers[1].getSource().getFeatures();
-        console.log('existing features',features);
-    }
 
 
     $(document).on('click','#geomark',function (evt) {
-
         evt.preventDefault();
         console.log("geomark button clicked!",this,evt);
-        $(popupEl).trigger('geomark', params);
-
+        $(evt.target).trigger('geomark');
     });
 
 
-    function grabCoordinates(geoMap,point) {
-        console.log('grabCoordinates',point);
-
-        geoMap.coordinates = point;
-        $('map').data('map',geoMap);
-    }
-
-    function onShowPopup(popupEl) {
-        $(popupEl).popover('show');
-        $(popupEl).on('shown.bs.popover', function (evt) {
-            console.log('shown.bs.popover!');
-            // set handler when click on popover's button
-        });
-
-    }
-
-
-    $(this.popup).on('geomark',function(evt,params) {
-        console.log('map geomark!', evt, params);
-
-    });
-
-
-    $('#map').on('afterShow', function (evt) {
+    $(this.selector).on('afterShow', function (evt) {
         var geoMap = $('#map').data('map');
         console.log('!afterShow! coordinates:',geoMap.coordinates);
         console.log('!afterShow!  geomap',geoMap);
-        L.marker(geoMap.coordinates).addTo(geoMap.map);
 
-    })
-}
+        // point the marker
+        marker = L.marker(geoMap.coordinates).addTo(geoMap.map);
+
+        console.log('click geoMap ', geoMap);
+
+        // add click on marker event handler
+        geoMap.map.on('click', function (e) {
+            L.popup()
+                .setLatLng(e.latlng)
+                .setContent("You clicked the map at " + e.latlng.toString())
+                .openOn(geoMap.map);
+        });
+
+        // click on every point handler
+        if (geoMap.coordinates != undefined) {
+            marker.bindPopup(mst_render('#mst_popup_content', {
+                lat: geoMap.coordinates[0],
+                long: geoMap.coordinates[1]
+            }));
+            L.popup().openOn(geoMap.map);
+        }
+
+
+    });
+
+
+};
 
 
 
