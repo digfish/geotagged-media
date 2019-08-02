@@ -17,7 +17,11 @@ This sinple plugin allows to show the location of your photos on map, if they we
 It uses the [OpenLayers JS Library](https://openlayers.org/) to render the points in a [OpenStreetMap](https://www.openstreetmap.org/). Clicking on the points will show a popup with a thumbnail. Clicking in it will open the 'Edit Image' for that particular photo
 Besides the map, it adds a 'metadata' column to the Media Listing table with the coordinates and the camera which took the photo. In the 'Edit Media' and 'Attachment Details' views adds fields with the coordinates and camera metadata values.
 It allows that your media files (photos) are automatically named using reverse geocoding during the upload to Wordpress.
-Three source Maps: OpenStreetMap, Bing,ESRI,TileWMS,ThunderForest.
+= Features =
+* Six source Maps: OpenStreetMap, Bing,ESRI,TileWMS,ThunderForest,MapBox. Google[^1].
+
+= DISCLAIMER =
+[1]: *Use of GoogleMaps without the use of their specific API is a violation of its terms of servie. If you want to use Google, use the HTML Widgets or a plugin like that support it. If you use Google with this plugin, you must register a Google Cloud project and enable the use of its API. The servie is paid. If you don't use this, be warned that you will be blocked by Google. You have been warned.*
 
 
 == Installation ==
@@ -90,4 +94,5 @@ First version. Not applicable.
 
 * Add an overlay icon to each photo in media library in grid mode
 * Filter on Media Library by if have metadata fields for camera or geolocation (partially done, not using camera)
-* Use [Leaflet Map Visualization Library](https://leafletjs.com/) on mobile devices instead of OpenLayers
+* Use [Leaflet Map Visualization Library](https://leafletjs.com/) on mobile devices instead of OpenLayers (using it Edit Media Details)
+

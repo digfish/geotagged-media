@@ -291,14 +291,14 @@ function gtm_admin_scripts($hook_suffix)
     $ol_js = plugin_dir_url(__FILE__) . 'ol/ol-5.3.0.js';
     wp_register_style('ol_css', $ol_css, array(), '5.3.0');
     wp_register_script('ol_js', $ol_js, array(), '5.3.0');
-   // wp_enqueue_script('ol_js');
+    wp_enqueue_script('ol_js');
 //	}
 
     $bootstrap_css = plugin_dir_url(__FILE__) . 'bootstrap/bootstrap.css';
     $bootstrap_css_theme = plugin_dir_url(__FILE__) . 'bootstrap/bootstrap-theme.css';
     $bootstrap_js = plugin_dir_url(__FILE__) . 'bootstrap/bootstrap-3.3.6.min.js';
 
-	$leaflet_js = plugin_dir_url(__FILE__) . "leaflet/leaflet.js";
+	$leaflet_js = plugin_dir_url(__FILE__) . "leaflet/leaflet-src.js";
     $leaflet_css = plugin_dir_url(__FILE__) ."leaflet/leaflet.css";
 
 	$gtm_css = plugin_dir_url(__FILE__) . 'gtm.css';
@@ -475,8 +475,14 @@ function gtm_submitbox_misc_actions($post)
             gtm_format_metadata_entry('longitude', gtm_geo_pretty_fracs2dec($md['longitude']) . $md['longitude_ref'], 'admin-site');
             $lat_dec = gtm_geo_dms2dec($md['latitude'], $md['latitude_ref']);
             $long_dec = gtm_geo_dms2dec($md['longitude'], $md['longitude_ref']);
-
+            $revgeocode_compl = null;
+            try {
             $revgeocode_compl = gtm_revgeocode(array('lat' => $lat_dec, 'long' => $long_dec));
+            } catch (Exception $ex) {
+                debug('error',$ex);
+                return null;
+                
+            }
             $toks = preg_split("/,/", $revgeocode_compl);
             $street_name = trim($toks[0]);
             echo gtm_gmaps_link($lat_dec, $long_dec);

@@ -18,7 +18,13 @@ This sinple plugin allows to show the location of your photos on map, if they we
 It uses the [OpenLayers JS Library](https://openlayers.org/) to render the points in a [OpenStreetMap](https://www.openstreetmap.org/). Clicking on the points will show a popup with a thumbnail. Clicking in it will open the 'Edit Image' for that particular photo
 Besides the map, it adds a 'metadata' column to the Media Listing table with the coordinates and the camera which took the photo. In the 'Edit Media' and 'Attachment Details' views adds fields with the coordinates and camera metadata values.
 It allows that your media files (photos) are automatically named using reverse geocoding during the upload to Wordpress.
-Three source Maps: OpenStreetMap, Bing,ESRI,TileWMS,ThunderForest.
+
+### Features 
+* Six source Maps: OpenStreetMap, Bing,ESRI,TileWMS,ThunderForest,MapBox. Google[^1].
+
+
+### DISCLAIMER 
+[1]: *Use of GoogleMaps without the use of their specific API is a violation of its terms of servie. If you want to use Google, use the HTML Widgets or a plugin like that support it. If you use Google with this plugin, you must register a Google Cloud project and enable the use of its API. The servie is paid. If you don't use this, be warned that you will be blocked by Google. You have been warned.*
 
 
 
@@ -48,19 +54,19 @@ Because OpenLayers does not support it builtin in version 5. In version 3, there
 ## Screenshots 
 
 ### 1. Edit Media gtm_edit_media.jpg
-![Edit Media gtm_edit_media.jpg](https://ps.w.org/geotagged-media/assets/screenshot-1.jpg)
+[missing image]
 
 ### 2. Edit Photo gtm_edit_photo.jpg
-![Edit Photo gtm_edit_photo.jpg](https://ps.w.org/geotagged-media/assets/screenshot-2.jpg)
+[missing image]
 
 ### 3. Media Library list gtm_media_library_list.jpg
-![Media Library list gtm_media_library_list.jpg](https://ps.w.org/geotagged-media/assets/screenshot-3.jpg)
+[missing image]
 
 ### 4. Map with the points where the media are located to.jpg
-![Map with the points where the media are located to.jpg](https://ps.w.org/geotagged-media/assets/screenshot-4.jpg)
+[missing image]
 
 ### 5. Clicking in one of the scores will bring a popup
-![Clicking in one of the scores will bring a popup](https://ps.w.org/geotagged-media/assets/screenshot-5.jpg)
+[missing image]
 
 
 
@@ -71,6 +77,9 @@ Because OpenLayers does not support it builtin in version 5. In version 3, there
 * Implemented categories and tags for Media
 * Implemented filter by category or tag
 * Shortcode now allows to filter geo tagged media on a map to category or tag
+* Edit the media metadata in  "edit media details" view
+* Media library list mode, filter images with or without geotag
+* Store the geotags directly in the image file as EXIF tags
 
 
 
@@ -106,15 +115,12 @@ First version. Not applicable.
 
 
 ## TODO 
-* Add an overlay icon to media library in grid mode
-* Filter on Media Library by if have metadata fields for camera or geolocation
-* Clicking on the popup in the geomap it will not bring the attachment details form in the media library in grid mode
-* composer must be installed not by default, but ONLY if the user wants to use geocoding
-* Use [Leaflet Map Visualization Library](https://leafletjs.com/) on mobile devices instead of OpenLayers
-* Plugin view in backoffice: allow to access settings on a link close to the plugin entry
-* Geomark manually must be done in a modal overlay instead of a new page
-* Store geodata in EXIF tags directly in files that don't have it
-* Show position on a map directly in the "edit media" details
-* Turn the metadata information in the "Save box" in edit media details into a form, suppressing the form that's shown below the picture
-* Remove the geotag from metadata stored in Wordpress
+
 * Two or more maps in the same HTML stream does not work properly (need to replace HTML id's with classes)
+* The providers maps keys should stay on server and not be send to the client
+* Geomark manually must be done in a modal overlay instead of a new page (done for media list view)
+
+* Add an overlay icon to each photo in media library in grid mode
+* Filter on Media Library by if have metadata fields for camera or geolocation (partially done, not using camera)
+* Use [Leaflet Map Visualization Library](https://leafletjs.com/) on mobile devices instead of OpenLayers
+* Add MapBOx to the list of source providers

@@ -2,7 +2,7 @@
 
 
 $GLOBALS['available_sources'] = array(
-    'OSM','BingMaps','ESRI-XYZ','TileWMS','ThunderForest','Google'
+    'OSM','BingMaps','ESRI-XYZ','TileWMS','ThunderForest','Google','MapBox'
 );
 
 function gtm_frontend_init()

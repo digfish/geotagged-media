@@ -150,35 +150,66 @@ var GtmGeomap = function (selector,library) {
 
     $(document).on('click','#geomark',function (evt) {
         evt.preventDefault();
+        newCoordinates = $('#map').data('lastPos');
         console.log("geomark button clicked!",this,evt);
-        $(evt.target).trigger('geomark');
+        $(evt.target).trigger('geomark', [newCoordinates]);
     });
+
+    $(document).on('geomark','#geomark',function (evt,newCoordinates) {
+        $.get(ajaxurl + "?action=gtm_geomark",
+        {
+            post_id: gtm_post_id,
+            coordinates: $('#map').data('lastPos')
+        }).success(
+        function (response) {
+            console.log('geomark response', response);
+            if (response.success) {
+                $('button#geomark').replaceWith('<STRONG>The photo was tagged with success!</STRONG>');
+            }
+        })
+    });
+
+
 
 
     $(this.selector).on('afterShow', function (evt) {
         var geoMap = $('#map').data('map');
+        var lastPos = null;
+        var popUp = null;
         console.log('!afterShow! coordinates:',geoMap.coordinates);
         console.log('!afterShow!  geomap',geoMap);
 
         // point the marker
-        marker = L.marker(geoMap.coordinates).addTo(geoMap.map);
+        marker = L.marker(geoMap.coordinates, {draggable: true}).addTo(geoMap.map);
 
         console.log('click geoMap ', geoMap);
 
         // add click on marker event handler
         geoMap.map.on('click', function (e) {
-            L.popup()
+            console.log(e.type,e);
+            popUp = L.popup()
                 .setLatLng(e.latlng)
                 .setContent("You clicked the map at " + e.latlng.toString())
                 .openOn(geoMap.map);
         });
 
+//        marker.draggable = true;
+
         // click on every point handler
         if (geoMap.coordinates != undefined) {
-            marker.bindPopup(mst_render('#mst_popup_content', {
+            popUp = marker.bindPopup(mst_render('#mst_popup_content', {
                 lat: geoMap.coordinates[0],
                 long: geoMap.coordinates[1]
-            }));
+            })).on('dragend',function(evt) {
+                console.log('Marker '+ evt.type + ' at  ' + evt.distance  + ' to ' + lastPos.toString() + ' from source !',evt);
+                console.log('lastPos obj = ',lastPos);
+                popUp = marker.bindPopup(mst_render('#mst_popup_confirm_new_loc', {lat: lastPos.lat, long: lastPos.lng}));
+                $('#map').data('lastPos',[lastPos.lng,lastPos.lat]);
+            }).on('move', function(evt) {
+                console.log('Marker '+ evt.type + ' to ' +  evt.latlng.toString(),evt);
+                lastPos = evt.latlng;                
+            });
+            // show popup
             L.popup().openOn(geoMap.map);
         }
 

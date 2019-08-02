@@ -17,6 +17,7 @@ $categories = gtm_category_names_for_geotagged_photos();
     <label><input type="radio" name="source_map" value="TileWMS">TileWMS</label>
     <label><input type="radio" name="source_map" value="ThunderForest">ThunderForest</label>
     <label><input type="radio" name="source_map" value="Google">Google</label>
+    <label><input type="radio" name="source_map" value="MapBox">MapBox</label>
 </div>
 <div id="map-thumbnails">
     <label><input type="checkbox" name="show_all_in_popovers" value="true">Show all photos in popups</label>

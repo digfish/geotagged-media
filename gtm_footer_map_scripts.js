@@ -13,6 +13,7 @@ jQuery(document).ready(function ($) {
 
     var keyBingMaps = '';
     var keyThunderForest = '';
+    var keyMapBox = '';
 
     // in the frontend ajaxurl is not defined!
     if (typeof ajaxurl == 'undefined') {
@@ -67,6 +68,7 @@ jQuery(document).ready(function ($) {
                 console.log('mapsources keys', response);
                 keyBingMaps = response['key_bingmaps'];
                 keyThunderForest = response['key_thunderforest'];
+                keyMapBox = response['key_mapbox'];
             }
         );
 
@@ -231,6 +233,12 @@ jQuery(document).ready(function ($) {
                 baseLayerTile = new ol.source.XYZ({
                     attributions: [new ol.control.Attribution({html: '<a href=""></a>'})],
                     url: 'http://mt0.google.com/vt/lyrs=y&hl=en&x={x}&y={y}&z={z}&s=Ga'
+                });
+                break;
+            case 'MapBox':
+                baseLayerTile = new ol.source.XYZ({
+                    url: 'https://api.tiles.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}.png' 
+                    + '?access_token=' + keyMapBox
                 });
                 break;
         }
