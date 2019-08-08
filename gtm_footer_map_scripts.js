@@ -56,7 +56,11 @@ jQuery(document).ready(function ($) {
                 keyThunderForest = response['key_thunderforest'];
                 keyMapBox = response['key_mapbox'];
                 var selCategory = $('[name=categories_filter]').val();
-                deferred.resolve(selCategory,tags);
+                if (typeof tags == 'undefined') {
+                    deferred.resolve(selCategory);
+                } else {
+                    deferred.resolve(selCategory, tags);
+                }
             }
         );
         return deferred.promise();
@@ -88,8 +92,13 @@ jQuery(document).ready(function ($) {
         grabMapSourceKeys().then(function (category,tags) {
             console.log('> getGeocodedMedia(',category,tags,')');
 
-            $.get(ajaxurl + "?action=gtm_geocoded_media",
-                {taxonomy: category, tags: tags})
+            params = {taxonomy: category, tags: tags};
+
+            if (!tags) {
+                params = {taxonomy: category};
+            }
+
+            $.get(ajaxurl + "?action=gtm_geocoded_media", params)
                 .success(
                 function (response) {
                     // clean the map
@@ -108,7 +117,7 @@ jQuery(document).ready(function ($) {
         // avoid the map being drawn again !
         && $('#map').children().length == 0) { // fetch the data of geotagged media only if there is a map on the view
         var selCategory = jQuery('[name=categories_filter]').val();
-        getGeocodedMedia(selCategory,tags);
+        getGeocodedMedia(selCategory);
     }
 
 

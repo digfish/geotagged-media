@@ -74,10 +74,8 @@ function gtm_store_exif($media_id)
         $geo_ifd->addEntry(new PelEntryRational(PelTag::GPS_LATITUDE, $degrees, $minutes, $seconds));
         $geo_ifd->addEntry(new PelEntryAscii(PelTag::GPS_LATITUDE_REF, ($latitude < 0) ? "S" : "N"));
 
-        d($longitude);
 
-
-        list ($degrees, $minutes, $seconds) = array_map(
+	list ($degrees, $minutes, $seconds) = array_map(
             function ($coord) {
                 return gtm_split_coord_tokens($coord);
             },

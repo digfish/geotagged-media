@@ -69,11 +69,12 @@ Because OpenLayers does not support it builtin in version 5. In version 3, there
 
 == Screenshots ==
 
-1. Edit Media gtm_edit_media.jpg
-2. Edit Photo gtm_edit_photo.jpg
-3. Media Library list gtm_media_library_list.jpg
-4. Map with the points where the media are located to.jpg
-5. Clicking in one of the scores will bring a popup
+1. New columns on media library list screenshot-1.jpg
+2. New metadata fields on Media details view screenshot-2.jpg
+3. Interactive map on dashobard screenshot-3.jpg
+4. Interactive map on dashboard showing popup screenshot-4.jpg
+5. Interactive Map with thumbnails on frontend screenshot-5.jpg
+6. Interactive map on dashboard with thumbnails screenshot-6.jpg
 
 == Changelog ==
 

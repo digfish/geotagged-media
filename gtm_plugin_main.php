@@ -77,10 +77,10 @@ function gtm_init()
 
     if (wp_doing_ajax()) {
     } elseif (is_admin()) {
-		debug( 'Loading backoffice...' );
+//		debug( 'Loading backoffice...' );
 		gtm_dashboard_init();
 	} else {
-		debug( 'Loading frontoffice...' );
+//		debug( 'Loading frontoffice...' );
 		gtm_frontend_init();
 	}
 

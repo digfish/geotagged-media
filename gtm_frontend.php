@@ -19,12 +19,12 @@ function gtm_frontend_init() {
 		global $available_sources, $wp_query;
 
 		$category = array_key_exists( 'category', $shortcode_attrs ) ? $shortcode_attrs['category'] : 'all';
-		d( $category );
+//		d( $category );
 
 		$tags = '';
 		if ( array_key_exists( 'tags', $shortcode_attrs ) ) {
 			$tags = $shortcode_attrs['tags'];
-			d($tags);
+//			d($tags);
 			// replace commnas with plus signs
 			//$tags = str_replace(',','+',$tags);
 			//$wp_query->query_vars['tags'] = $tags;
@@ -36,7 +36,7 @@ function gtm_frontend_init() {
 			$declared_sources = preg_split( '/,/', $shortcode_attrs['sources'] );
 			$using_sources    = array_intersect( $declared_sources, $available_sources );
 		};
-		d( $using_sources );
+//		d( $using_sources );
 
 
 		require_once "gtm_frontend_map.php";

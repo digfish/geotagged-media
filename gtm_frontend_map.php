@@ -1,5 +1,5 @@
 <?php
-d( '$shortcode_attrs', $shortcode_attrs );
+//d( '$shortcode_attrs', $shortcode_attrs );
 
 //debug(__FILE__  .'-'. __LINE__. ': ' . $shortcode_attrs['category']);
 echo "<script type='text/javascript'>";
@@ -51,7 +51,6 @@ $categories = gtm_category_names_for_geotagged_photos();
 
 <?php
 if ( !empty($tags)) {
-    d($tags);
     echo "<input id='tags'type='hidden' name='tags' value='$tags'>";
 }
 ?>

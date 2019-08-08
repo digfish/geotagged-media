@@ -1,6 +1,6 @@
 <?php
 
-d(array('form_fields' => $form_fields, 'post' => $post));
+//d(array('form_fields' => $form_fields, 'post' => $post));
 
 ?>
 <a name="geomark_footer_map"></a>

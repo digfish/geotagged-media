@@ -12,7 +12,6 @@ function gtm_delete_attachment_metadata( $media_post_id ) {
 	*/
 
 	$media_attachment_metadata = wp_get_attachment_metadata( $media_post_id );
-	d( 'before', $media_attachment_metadata );
 	$image_meta = $media_attachment_metadata['image_meta'];
 	unset( $image_meta['latitude'] );
 	unset( $image_meta['latitude_ref'] );
@@ -26,7 +25,6 @@ function gtm_delete_attachment_metadata( $media_post_id ) {
 		echo "The attachment metadata was deleted successfully!";
 	}
 
-	d( 'after', $media_attachment_metadata );
 }
 
 function gtm_delete_exif( $media_id ) {

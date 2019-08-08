@@ -3,7 +3,7 @@
 
 function gtm_debug_query($results, $wp_query)
 {
-    d(__FUNCTION__ . " query:", $wp_query->request);
+	// d(__FUNCTION__ . " query:", $wp_query->request);
 
     return $results;
 }
@@ -328,7 +328,7 @@ function gtm_get_geotagged_photos()
     	$tag_tokens =  preg_split('/,/',$_REQUEST['tags']);
     	if (count($tag_tokens) > 0) {
   //	    $args['tags'] = join("+",$tag_tokens);
-      	debug('tag_tokens',$tag_tokens);
+		    //   	debug('tag_tokens',$tag_tokens);
     //    $tag_tokens[] = $tag_data->term_id;
         $tag_data = array();
         foreach ($tag_tokens as $tag_token) {
@@ -339,7 +339,7 @@ function gtm_get_geotagged_photos()
       }
     }
 
-    debug("query args", $args);
+	//   debug("query args", $args);
     $query = new WP_Query($args);
 //    debug("after instantiation", $query);
 
@@ -350,7 +350,7 @@ function gtm_get_geotagged_photos()
     //   debug("after filters", $query);
 
     $geocoded_images = array();
-  	debug(__FUNCTION__ . " query:", $query->request);
+	// 	debug(__FUNCTION__ . " query:", $query->request);
     //d($query->request);
 
     if ($query->have_posts()) {
@@ -405,14 +405,14 @@ function gtm_repair_image_meta($image_post_id) {
     global $wpdb;
 
     $image_filepath = get_attached_file($image_post_id);
-    d($image_filepath);
-    $image_filename = basename($image_filepath);
+
+	$image_filename = basename($image_filepath);
         $meta = wp_get_attachment_metadata($image_post_id);
     //    if (!$meta) {
             $media_upload_dir = wp_get_upload_dir();
 
-                    d($media_upload_dir);
-   //         if (!empty($file_filepath)) {
+
+	//         if (!empty($file_filepath)) {
                 $info = getimagesize($image_filepath);
                 $meta = array (
                     'width' => $info[0],
@@ -423,8 +423,8 @@ function gtm_repair_image_meta($image_post_id) {
                     'sizes' => array(),         // thumbnails etc.
                     'image_meta' => array(),    // EXIF data
                 );
-                d($meta);
-                update_post_meta($image_post_id, '_wp_attachment_metadata', $meta);
+
+	update_post_meta($image_post_id, '_wp_attachment_metadata', $meta);
      //       }
   //      }
 }
@@ -436,8 +436,6 @@ function gtm_media_image_file($image_post_id) {
     $image_metadata = wp_get_attachment_metadata($image_post_id);
     $media_upload_dir = wp_get_upload_dir();
     $absfilepath =  $media_upload_dir['basedir'] .'/'. $image_metadata['file'];
-
-               d($absfilepath);
 
     return $absfilepath;
 

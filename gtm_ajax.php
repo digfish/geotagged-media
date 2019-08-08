@@ -81,7 +81,7 @@ add_action('wp_ajax_gtm_install_deps', function () {
 
 
 add_action('wp_ajax_gtm_html_url', function () {
-    debug(__FUNCTION__ . " request:", $_REQUEST);
+	//   debug(__FUNCTION__ . " request:", $_REQUEST);
     $url = urldecode($_REQUEST['url']);
     echo file_get_contents(home_url() . "/$url");
     wp_die();
@@ -134,7 +134,7 @@ add_action('wp_ajax_getcoord', function () {
         $md = $image_md['image_meta'];
         $lat_dec = gtm_geo_dms2dec($md['latitude'], $md['latitude_ref']);
         $long_dec = gtm_geo_dms2dec($md['longitude'], $md['longitude_ref']);
-        debug(__METHOD__, array($lat_dec, $long_dec));
+	    //      debug(__METHOD__, array($lat_dec, $long_dec));
         echo json_encode([$long_dec, $lat_dec]);
     }
     wp_die();

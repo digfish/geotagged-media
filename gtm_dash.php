@@ -32,7 +32,7 @@ function gtm_dashboard_init()
     add_filter('the_posts', 'gtm_debug_query', 10, 2);
     add_action('save_post', function ($post_id) {
         $post = get_post($post_id);
-        debug(__FUNCTION__ . 'post = ', $post);
+	    //debug(__FUNCTION__ . 'post = ', $post);
     });
     add_filter('attachment_fields_to_save', 'gtm_after_media_updated', 10, 2);
 //	add_action('save_post','gtm_after_media_updated');
@@ -57,10 +57,10 @@ function gtm_geocoord_dms_to_attach_fmt($coord_dms)
 
 function gtm_after_media_updated($post, $new_attachment_data)
 {
-    debug(__FUNCTION__ . "_REQUEST", $_REQUEST);
-    debug(__FUNCTION__ . ' post', $post);
-    debug(__FUNCTION__ . ' attachment', $new_attachment_data);
-
+	/*   debug(__FUNCTION__ . "_REQUEST", $_REQUEST);
+	   debug(__FUNCTION__ . ' post', $post);
+	   debug(__FUNCTION__ . ' attachment', $new_attachment_data);
+   */
 
     if (isset($post['ID'])) {
         $curr_attach_md = wp_get_attachment_metadata($post['ID']);
@@ -69,7 +69,7 @@ function gtm_after_media_updated($post, $new_attachment_data)
     }
 
     $image_md = $curr_attach_md['image_meta'];
-    d($image_md);
+	// d($image_md);
 
     list($new_latitude, $new_latitude_ref) = gtm_geocoord_dms_to_attach_fmt($_REQUEST['latitude']);
     list($new_longitude, $new_longitude_ref) = gtm_geocoord_dms_to_attach_fmt($_REQUEST['longitude']);
@@ -264,7 +264,7 @@ function gtm_settings_admin_page()
     $gtm_options = get_option('gtm_options');
 
     if (!empty($_POST)) {
-        d(__FUNCTION__, $_POST);
+	    //      d(__FUNCTION__, $_POST);
         if (!empty($_POST['gtm_options'])) {
             $gtm_options = $_POST['gtm_options'];
             update_option('gtm_options', $gtm_options);
@@ -378,14 +378,14 @@ function gtm_dash_callback()
             $media_id = @$_REQUEST['media_id'];
             gtm_repair_image_meta($media_id);
             $image_metadata = wp_get_attachment_metadata($media_id);
-            debug('read_exif image_metadata',$image_metadata);
+//            debug('read_exif image_metadata',$image_metadata);
             $imgfilepath = gtm_media_image_file($media_id);
-            debug('read_exif imagefilepath',[$imgfilepath, file_exists( $imgfilepath)]);;
+	        //           debug('read_exif imagefilepath',[$imgfilepath, file_exists( $imgfilepath)]);;
 
             $image_metadata['image_meta'] = gtm_extract_exif($image_metadata['image_meta'],$imgfilepath);
-            debug('read_exif image_metadata',$image_metadata);
+	        //         debug('read_exif image_metadata',$image_metadata);
             wp_update_attachment_metadata( $media_id, $image_metadata );
-            debug('read exif image metadata after update',wp_get_attachment_metadata( $media_id));
+//            debug('read exif image metadata after update',wp_get_attachment_metadata( $media_id));
             header("Location: post.php?post=$media_id&action=edit");
 
             break;
@@ -462,9 +462,9 @@ function gtm_submitbox_misc_actions($post)
     require_once "gtm_geocode_lib.php";
 
     $atchmnt_post_data = get_post($post->ID);
-    d($atchmnt_post_data);
+	//  d($atchmnt_post_data);
     $image = wp_get_attachment_metadata($post->ID);
-    d($image);
+	//d($image);
     if (!empty($image['image_meta'])) {
         $md = $image['image_meta'];
 
@@ -479,9 +479,9 @@ function gtm_submitbox_misc_actions($post)
             $long_dec = gtm_geo_dms2dec($md['longitude'], $md['longitude_ref']);
             $revgeocode_compl = null;
             try {
-            $revgeocode_compl = gtm_revgeocode(array('lat' => $lat_dec, 'long' => $long_dec));
+	            $revgeocode_compl = gtm_revgeocode( array( 'lat' => $lat_dec, 'long' => $long_dec ) );
             } catch (Exception $ex) {
-                debug('error',$ex);
+	            //               debug('error',$ex);
                 return null;
                 
             }
@@ -625,7 +625,7 @@ function gtm_media_details($form_fields, $post)
 
 function gtm_attachment_field_to_edit($form_fields, $post)
 {
-    d(__FUNCTION__);
+//    d(__FUNCTION__);
     $ff = $form_fields;
     $image = wp_get_attachment_metadata($post->ID);
     if (!empty($image['image_meta'])) {
