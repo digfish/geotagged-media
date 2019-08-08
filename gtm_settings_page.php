@@ -49,7 +49,7 @@
 
         </p>
 
-        <p><label class="gtm input-label"> MapBox Key</label><input class="gtm-input" type="text"
+        <p><label class="gtm input-label"> MapBox Key</label><input class="gtm-input" type="text" style="width:700px"
                                                                     name="gtm_options[key_mapbox]"
                                                                     value="<?php echo $gtm_options['key_mapbox'] ?>">
 
@@ -76,6 +76,7 @@
 
         $.get(
             ajaxurl + "?action=gtm_get_options_values",
+//            "<?php echo WP_PLUGIN_URL ?>" + "/geotagged_media/gtm_ajax.php?action=gtm_get_options_values",
             {}).success(
             function (response) {
                 //               console.log("GTM options", response);

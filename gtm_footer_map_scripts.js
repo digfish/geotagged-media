@@ -15,6 +15,7 @@ jQuery(document).ready(function ($) {
     var keyThunderForest = '';
     var keyMapBox = '';
 
+
     // in the frontend ajaxurl is not defined!
     if (typeof ajaxurl == 'undefined') {
         ajaxurl = '/wp-admin/admin-ajax.php';
@@ -26,7 +27,7 @@ jQuery(document).ready(function ($) {
         width: 1
     });
     var fill = new ol.style.Fill({
-        color: 'green'
+        color: 'yellow'
     });
     var square = new ol.style.Style({
         image: new ol.style.RegularShape({
@@ -46,41 +47,68 @@ jQuery(document).ready(function ($) {
         })
     });
 
-
-    //var mustache_tmpl = "";
-    // load mustache js templates FIXME replace with a function that returns the url path
-    /*$.get("/wp-content/plugins/geotagged-media/gtm.mst", {}).success(function (response) {
-        console.log("Mustache templates file loaded!");
-        mustache_tmpl = jQuery.parseHTML(response, document, true);
-        $('head').append(mustache_tmpl);
-
-    });*/
-
-    console.log("'" + $('[name=categories_filter]:selected').val() + "' = " + category + " ?");
-
-    if (category != $('[name=categories_filter]:selected').val()) {
-        //$('[name=categories_filter]:selected').triggerHandler('change',category);
-        setMapforCategory(category);
-    }
-    if ($('#map').length) { // fetch the data of geotagged media only if there is a map on the view
+    function grabMapSourceKeys() {
+        var deferred = jQuery.Deferred();
         $.get(ajaxurl + "?action=gtm_get_mapsources_keys", {}).success(
             function (response) {
                 console.log('mapsources keys', response);
                 keyBingMaps = response['key_bingmaps'];
                 keyThunderForest = response['key_thunderforest'];
                 keyMapBox = response['key_mapbox'];
+                var selCategory = $('[name=categories_filter]').val();
+                deferred.resolve(selCategory,tags);
             }
         );
+        return deferred.promise();
+    }
 
-        $.get(ajaxurl + "?action=gtm_geocoded_media",
-            {}).success(
-            function (response) {
-                console.log('geocoded data', response[0]);
-                //        console.log('Total media count', response[1]);
-                totalMediaCount = parseInt(response[1]);
-                points = response[0];
-                $('#map').trigger('init');
-            });
+
+    var categorySelected = $('[name=categories_filter]:selected').val();
+    console.log("'" + categorySelected + "' = " + category + " ?");
+
+    if ((category != undefined || category != 'all') && category != categorySelected) {
+        //$('[name=categories_filter]:selected').triggerHandler('change',category);
+        tags = $("input[name='tags']").val();
+        console.log('tags:', tags);
+        if (tags != null) {
+            if (tags.length != 0) {
+                var selCategory = jQuery('[name=categories_filter]').val();
+                getGeocodedMedia(selCategory,tags);
+            }
+        }
+    }
+
+    console.log('points', points);
+
+
+
+
+
+    function getGeocodedMedia(category,tags) {
+        grabMapSourceKeys().then(function (category,tags) {
+            console.log('> getGeocodedMedia(',category,tags,')');
+
+            $.get(ajaxurl + "?action=gtm_geocoded_media",
+                {taxonomy: category, tags: tags})
+                .success(
+                function (response) {
+                    // clean the map
+                    $('#map').html('');
+                    console.log('getGeocodedMedia() gtm geocoded data', response[0]);
+                    //        console.log('Total media count', response[1]);
+
+                    totalMediaCount = parseInt(response[1]);
+                    points = response[0];
+                    $('#map').trigger('init');
+                });
+        });
+    }
+
+    if ($('#map').length
+        // avoid the map being drawn again !
+        && $('#map').children().length == 0) { // fetch the data of geotagged media only if there is a map on the view
+        var selCategory = jQuery('[name=categories_filter]').val();
+        getGeocodedMedia(selCategory,tags);
     }
 
 
@@ -97,39 +125,14 @@ jQuery(document).ready(function ($) {
     });
 
 
-    function setMapforCategory(category) {
-        console.log('>setMapForCategory to', category);
-        $.get(ajaxurl + "?action=gtm_geocoded_media",
-            {taxonomy: category})
-            .success(
-                function (response) {
-                    console.log('geocoded data with taxonomy', response[0]);
-                    //        console.log('Total media count', response[1]);
-                    totalMediaCount = parseInt(response[1]);
-                    points = response[0];
-                    // clean the map
-                    $('#map').html('');
-                    $('#map').trigger('init');
-                    /*                $select = $('[name=categories_filter]');
-                                    $currSelectedOption = $('[name=categories_filter] option:selected');
-                                    $currSelectValue = $currSelectedOption.attr('value');
-                                    console.log("current selected ->",$currSelectedOption);
-                                    $currSelectedOption.removeAttr('selected');
-                                    var newSelecteValue = $select.data('newSelecteValue');
-                                    console.log("New selected value",newSelecteValue);
-                                    var $newSelectedOption = $select.children('option:contains("' + newSelecteValue +'")')
-                                    console.log("new selected option value:" + $newSelectedOption.attr('value'));
-                                    $newSelectedOption.attr('selected',true);
-                    */
-                });
 
-    }
 
     $('[name=categories_filter]').change(function (evt, data) {
+
+
         console.log('>' + '[name=categories_filter]', evt, data);
-        setMapforCategory($(this).val());
-        //      $(this).removeAttr('selected');
-        //      $(this).data('newSelectedValue',$(this).val());
+        var newSelValue = $(this).val();
+        getGeocodedMedia(newSelValue);
     });
 
     $('[name=show_all_in_popovers]').change(function (evt) {
@@ -160,13 +163,14 @@ jQuery(document).ready(function ($) {
 
     function mapLoad() {
         console.log('>mapLoad()');
-        console.log([keyBingMaps, keyThunderForest]);
+        // console.log([keyBingMaps, keyThunderForest]);
 
-        if (points.length != 0) {
+        if (points != undefined && points.length != 0) {
             $('#gtm-media-info').html('Found ' + totalMediaCount + ' images, from which ' + points.length + ' are geocoded, whose locations are shown on the map.');
             $('.gtm-highlight').show();
         } else {
-            $('#gtm-media-info').html('<STRONG>Found ' + totalMediaCount + ' images, but none of them are geotagged ! Please upload geotagged pictures!</STRONG>');
+            $('#gtm-media-info').html('<STRONG>Found ' + totalMediaCount + ' images, but none of them are geotagged ! Please upload geotagged pictures or geomark them !</STRONG>');
+            return;
         }
 
         var features = new Array(points.length);
@@ -237,8 +241,8 @@ jQuery(document).ready(function ($) {
                 break;
             case 'MapBox':
                 baseLayerTile = new ol.source.XYZ({
-                    url: 'https://api.tiles.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}.png' 
-                    + '?access_token=' + keyMapBox
+                    url: 'https://api.tiles.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}.png'
+                        + '?access_token=' + keyMapBox
                 });
                 break;
         }
@@ -327,34 +331,12 @@ jQuery(document).ready(function ($) {
             popup.setPosition(coord);
 
             $(popupElement).html(wp_media_link(img_html, properties.post_id));
-//            console.log('this feature props',properties);
-//            console.log('popupElement',popupElement);
-//            console.log('popup',popup);
 
-
-            /*
-                        $(popupElement).popover({
-                            placement: 'top',
-                            animation: false,
-                            html: true,
-                            content: mst_render('#mst_only_thumbnail_content', {
-                                name: properties.name,
-                                content: wp_media_link(img_html, properties.post_id),
-                                url_edit_image: wp_media_url(properties.post_id)
-                            })
-                        });
-
-                        $(popupElement).popover('show');
-                        var popupDelegateId = $(popupElement).attr('aria-describedby');
-                        var popupDelegate = $('#' + popupDelegateId);
-            */
-            //console.log('popupDelegate',popupDelegate);
         });
 
     }
 
     function clearAllFeatures(map) {
-
         var feautresLayer = map.getLayers().getArray()[1];
         feautresLayer.getSource().clear();
     }

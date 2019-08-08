@@ -84,3 +84,7 @@ function initDismissableButtonAction() {
 
     });
 }
+
+function isMapDrawn() {
+    return jQuery('canvas').length > 0;
+}

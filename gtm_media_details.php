@@ -3,6 +3,7 @@
 d(array('form_fields' => $form_fields, 'post' => $post));
 
 ?>
+<a name="geomark_footer_map"></a>
 
 <h1>Map</h1>
 <p>Click and drag the point to new position. Click again to confirm it.</p>

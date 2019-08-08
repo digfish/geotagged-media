@@ -2,10 +2,15 @@
 d( '$shortcode_attrs', $shortcode_attrs );
 
 //debug(__FILE__  .'-'. __LINE__. ': ' . $shortcode_attrs['category']);
-if ( isset( $category ) ) {
+echo "<script type='text/javascript'>";
+    if ( isset( $category ) ) {
+	echo "var category = '$category';" ;
+	}
+if (!empty($tags)) {
+    echo "var tags = " . json_encode($tags) . ";";
+    }
+echo "</script>";
 
-	echo "<script type='text/javascript'>var category = '$category' ;</script>";
-}
 
 function verify_shortcode_attr( $shortcode_attrs, $attr ) {
 	return ( ! empty( $shortcode_attrs[ $attr ] ) && ( $shortcode_attrs[ $attr ] == 'true' || $shortcode_attrs[ $attr ] == 'yes' ) );
@@ -36,15 +41,20 @@ $categories = gtm_category_names_for_geotagged_photos();
     <div id="categories-filter">
         <label>Filter by category</label>
         <select name="categories_filter">
-			<?php if ( 'category' == 'all' ): ?>
-                <option value="">All</option>
-			<?php else: foreach ( $categories as $name ) : ?>
+                <option value="all">All</option>
+			<?php  foreach ( $categories as $name ) : ?>
                 <option value="<?php echo $name ?>" <?php echo( isset( $category ) && $category == $name ? " selected" : "" ) ?> ><?php echo $name ?></option>
-			<?php endforeach;
-			endif; ?>
+			<?php endforeach; ?>
         </select>
     </div>
 <?php endif ?>
+
+<?php
+if ( !empty($tags)) {
+    d($tags);
+    echo "<input id='tags'type='hidden' name='tags' value='$tags'>";
+}
+?>
 
 <P id='gtm-media-info'>Please wait while the map with the points for the geocoded media loads...</P>
 

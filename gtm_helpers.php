@@ -10,7 +10,7 @@ function gtm_debug_query($results, $wp_query)
 
 function gtm_gmaps_link($lat_dec, $long_dec)
 {
-    return "<P class='misc-pub-section'><A href='" . gtm_gmaps_url($lat_dec, $long_dec) . "' target='_blank'>Show it on Google Maps (opens in new window)</A></P>";
+    return "<li class='misc-pub-section'><A href='" . gtm_gmaps_url($lat_dec, $long_dec) . "' target='_blank'>Show it on Google Maps (opens in new window)</A></li>";
 }
 
 
@@ -317,13 +317,29 @@ function gtm_get_geotagged_photos()
     );
 
 
-    if (isset($_REQUEST['taxonomy'])) {
+    if (!empty($_REQUEST['taxonomy'])) {
         $cat_id = get_cat_ID($_REQUEST['taxonomy']);
 
         //      debug('cat_id', $cat_id);
         $args['cat'] = $cat_id;
     }
-    //   debug("query args", $args);
+
+    if (!empty($_REQUEST['tags'])) {
+    	$tag_tokens =  preg_split('/,/',$_REQUEST['tags']);
+    	if (count($tag_tokens) > 0) {
+  //	    $args['tags'] = join("+",$tag_tokens);
+      	debug('tag_tokens',$tag_tokens);
+    //    $tag_tokens[] = $tag_data->term_id;
+        $tag_data = array();
+        foreach ($tag_tokens as $tag_token) {
+          $a_tag = get_term_by('name',$tag_token,'post_tag');
+          $tag_data[] = $a_tag->term_id;
+        }
+        $args['tag__and'] = $tag_data;
+      }
+    }
+
+    debug("query args", $args);
     $query = new WP_Query($args);
 //    debug("after instantiation", $query);
 
@@ -334,9 +350,12 @@ function gtm_get_geotagged_photos()
     //   debug("after filters", $query);
 
     $geocoded_images = array();
+  	debug(__FUNCTION__ . " query:", $query->request);
+    //d($query->request);
+
     if ($query->have_posts()) {
         $posts = $query->get_posts();
-        debug(__FUNCTION__ . " query:", $query->request);
+
         foreach ($posts as $post) {
             $md = wp_get_attachment_metadata($post->ID);
             if ($md && !empty($md['image_meta']['latitude'])) {

@@ -1,5 +1,25 @@
 <?php
 
+
+
+// this code called directly without using the 'heartbeat' define on wpajaxurl
+
+if (!function_exists('add_action')) {
+    if (!defined('ABSPATH')) {
+        define('ABSPATH','../../..');
+    }
+
+    $wp_load_location = ABSPATH .'/wp-load.php';
+    if (file_exists($wp_load_location)) {
+        require_once   $wp_load_location;
+
+        if ($_REQUEST['action'] && $_REQUEST['action'] == 'gtm_get_options_values') {
+            ajax_get_options_values();
+            }
+        }
+}
+
+
 /**** AJAX ACTIONS ****/
 add_action('wp_ajax_gtm_geocoded_media', 'ajax_get_geotagged_media');
 add_action('wp_ajax_nopriv_gtm_geocoded_media', 'ajax_get_geotagged_media');
@@ -29,6 +49,9 @@ function ajax_get_options_values()
     echo json_encode(get_option('gtm_options'));
     wp_die();
 }
+
+
+
 
 add_action('wp_ajax_gtm_download_composer', function () {
     $composer_downloaded = gtm_download_composer();
@@ -116,3 +139,5 @@ add_action('wp_ajax_getcoord', function () {
     }
     wp_die();
 });
+
+

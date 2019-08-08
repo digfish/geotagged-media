@@ -73,17 +73,19 @@ function gtm_after_media_updated($post, $new_attachment_data)
 
     list($new_latitude, $new_latitude_ref) = gtm_geocoord_dms_to_attach_fmt($_REQUEST['latitude']);
     list($new_longitude, $new_longitude_ref) = gtm_geocoord_dms_to_attach_fmt($_REQUEST['longitude']);
-    $new_camera = $_REQUEST['camera'];
+	if (array_key_exists('camera',$_REQUEST)) {
+		$new_camera = $_REQUEST['camera'];
+		$image_md['camera'] = $new_camera;
+	}
     $image_md['latitude'] = $new_latitude;
     $image_md['latitude_ref'] = $new_latitude_ref;
     $image_md['longitude'] = $new_longitude;
     $image_md['longitude_ref'] = $new_longitude_ref;
-    $image_md['camera'] = $new_camera;
 
-    debug('new values', [$new_camera, $new_latitude, $new_latitude_ref, $new_longitude, $new_longitude_ref]);
+//    debug('new values', [$new_camera, $new_latitude, $new_latitude_ref, $new_longitude, $new_longitude_ref]);
 
     $curr_attach_md['image_meta'] = $image_md;
-    debug('new camera', $curr_attach_md['image_meta']['camera']);
+ //   debug('new camera', $curr_attach_md['image_meta']['camera']);
 
     $res = wp_update_attachment_metadata($post['ID'], $curr_attach_md);
 
@@ -485,9 +487,11 @@ function gtm_submitbox_misc_actions($post)
             }
             $toks = preg_split("/,/", $revgeocode_compl);
             $street_name = trim($toks[0]);
+
             echo gtm_gmaps_link($lat_dec, $long_dec);
             //d( $image );
-            echo "<P class='misc-pub-section'> <A href='upload.php?page=gtm&action=media_new_title&media_id={$post->ID}&new_title=$street_name'>Change the title of this picture to '$revgeocode_compl'?</A></P>";
+
+            echo "<li class='misc-pub-section'> <A href='upload.php?page=gtm&action=media_new_title&media_id={$post->ID}&new_title=$street_name'>Change the title of this picture to '$revgeocode_compl'?</A></li>";
 
             $media_upload_dir = wp_get_upload_dir();
             $absfilepath = $media_upload_dir['basedir'] . "/" . $image['file'];
@@ -498,21 +502,24 @@ function gtm_submitbox_misc_actions($post)
 
             //           d($gtm_has_file_exif_out);
             if ($gtm_has_file_exif_out == false) {
-                echo "<P><strong>The image file as no EXIF tags</strong></P>";
+                echo "<li class='misc-pub-section'><strong>The image file as no EXIF tags</strong></li>";
             } else {
-            	echo "<li><strong>The file has EXIF geotag.</strong><A href='upload.php?page=gtm&action=delete_exif&media_id={$post->ID}'>Delete the EXIF tag from the Wordpress DB</A></li>";
+            	echo "<li class='misc-pub-section'><strong>The file has EXIF geotag.</strong>&nbsp;<A href='upload.php?page=gtm&action=delete_exif&media_id={$post->ID}'>Delete the EXIF tag from the Wordpress DB</A></li>";
             }
         } else {
             echo "<P>There is no geometadata data for this image!</P>";
         }
     }
-	echo "<li><A href='upload.php?page=gtm&action=store_exif&media_id={$post->ID}'>Store  geometadata as EXIF tags in image file</A></li>";
+	echo "<li class='misc-pub-section'><A href='upload.php?page=gtm&action=store_exif&media_id={$post->ID}'>Store  geometadata as EXIF tags in image file</A></li>";
     $url_geomark = "/notmpl/gtm_geomark?post_id={$post->ID}";
-    echo "<li><A href=\"javascript:gtmOverlayModalUrl('$url_geomark')\" target='_blank'>Click to geotag this photo</A></li>";
+//    echo "<li><A href=\"javascript:gtmOverlayModalUrl('$url_geomark')\" target='_blank'>Geotag to a new location</A></li>";
+	echo "<li class='misc-pub-section'><A href='#geomark_footer_map' >Geotag to a new location</A></li>";
 
     //if (gtm_has_file_exif(gtm_media_image_file($post->ID))) {
-    echo "<li><A href='upload.php?page=gtm&action=read_exif&media_id={$post->ID}'>Extract metadata from the EXIF tags of image file to Wordpress DB</A></li>";
+    echo "<li class='misc-pub-section'><A href='upload.php?page=gtm&action=read_exif&media_id={$post->ID}'>Extract metadata from the EXIF tags of image file to Wordpress DB</A></li>";
    // }
+
+
 
 }
 
