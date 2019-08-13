@@ -63,7 +63,25 @@
 <script type="text/javascript">
 
 
+
+    function jquiModal(dialog_id,msg) {
+         jQuery('body').append("<DIV id='"+ dialog_id + "'><img src='/wp-includes/images/spinner-2x.gif'>" + msg + "</DIV");
+        $jquim = jQuery('#'+dialog_id).dialog();
+        console.log('jquim',$jquim);
+        return $jquim;
+    }
+
+    function jquiClose($jquim) {
+
+        jQuery('.ui-dialog button').trigger('click');
+        jQuery('.ui-dialog').remove();
+    }
+
+
+
     jQuery(document).ready(function ($) {
+
+        $jquim = jquiModal('gtmModalWaitSettings',"<H4>Please wait while the option settings are loaded...</H4>");
 
         var mustache_tmpl = "";
         // load mustache js templates
@@ -76,9 +94,9 @@
 
         $.get(
             ajaxurl + "?action=gtm_get_options_values",
-//            "<?php echo WP_PLUGIN_URL ?>" + "/geotagged_media/gtm_ajax.php?action=gtm_get_options_values",
             {}).success(
             function (response) {
+                jquiClose($jquim);                
                 //               console.log("GTM options", response);
                 gtm_options = response;
                 $.each(gtm_options, function (option_name, option_value) {
@@ -92,9 +110,11 @@
 
         $('#btn_download_composer').on('click', function (evt) {
             evt.preventDefault();
+            jquim = jquiModal("gtmModalWaitDwnldComposer","<H4>Downloading composer, wait...</H4>");
             $.get(
                 ajaxurl + "?action=gtm_download_composer", {}).success(function (response) {
-//                console.log(response);
+                jquiClose(jquim);
+                console.log(response);
                 $('#download_composer_response').html(mst_render('#mst_simple_paragraph', {'text': response}));
                 $('#download_composer_response').show();
                 //$('#composer_init_section').trigger('init_vendor');
@@ -107,9 +127,11 @@
         $('#composer_init_section').on('click', '#btn_composer_init_vendor', function (evt) {
             //          console.log('clicked',this)
             evt.preventDefault();
+            jquim = jquiModal("gtmModalWiatDwnldDpendencis","<H4>Downloading dependencies, wait...</H4>");
             $('#btn_composer_init_vendor').parent().append(mst_render('#mst_simple_paragraph', {'text': "Downloading dependencies . . . Please wait . . ."}));
             $.get(ajaxurl + "?action=gtm_install_deps", {}).success(function (response) {
                 //              console.log(response);
+                jquiClose(jquim);
                 $('#btn_composer_init_vendor').parent().append(mst_render('#mst_textarea_console', {'text': response}));
 
                 $('#btn_composer_init_vendor').parent().append(mst_render('#mst_simple_paragraph', {'text': "Dependencies installed with success!"}));

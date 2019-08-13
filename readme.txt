@@ -53,7 +53,7 @@ The four arguments below accept a `yes` (or `true`) or `no` (`false`) value. if 
 * `with_source_maps_selector` - draw the radio buttons allowing to select the desire the map source, one at a time -
 * `with_thumbnail_checkbox` - show the checkbox to show the thumbnails close to the geotag mark
 * `with_categories_filter`- draw a dropdown allowing to select one category at a time
-* `with_tip_info` - show a tip explaining how to deal with the map (use it only if you think your users are dumb!) :D
+* `with_tip_info` - show a tip explaining how to deal with the map 
 
 
 = My photos from my camera are surely geotagged, why they don't appear as such in Wordpress ? =

@@ -17,21 +17,19 @@ function gtm_frontend_init() {
 	add_shortcode( 'gtm_map', function ( $shortcode_attrs ) {
 
 		global $available_sources, $wp_query;
-
-		$category = array_key_exists( 'category', $shortcode_attrs ) ? $shortcode_attrs['category'] : 'all';
+		$category = 'all';
+		if (!empty($shortcode_attrs['category'])) {
+			$category = $shortcode_attrs['category'];
+		}
 //		d( $category );
 
 		$tags = '';
-		if ( array_key_exists( 'tags', $shortcode_attrs ) ) {
+		if (!empty($shortcode_attrs['category'])) {
 			$tags = $shortcode_attrs['tags'];
-//			d($tags);
-			// replace commnas with plus signs
-			//$tags = str_replace(',','+',$tags);
-			//$wp_query->query_vars['tags'] = $tags;
 		}
 
 		$using_sources = $available_sources;
-		if ( array_key_exists( 'sources', $shortcode_attrs ) && $shortcode_attrs['sources'] != 'all' ) {
+		if (!empty($shortcode_attrs['sources']) && $shortcode_attrs['sources'] != 'all' ) {
 
 			$declared_sources = preg_split( '/,/', $shortcode_attrs['sources'] );
 			$using_sources    = array_intersect( $declared_sources, $available_sources );

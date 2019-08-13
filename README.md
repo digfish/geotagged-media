@@ -60,7 +60,7 @@ The four arguments below accept a `yes` (or `true`) or `no` (`false`) value. if 
 * `with_source_maps_selector` - draw the radio buttons allowing to select the desire the map source, one at a time -
 * `with_thumbnail_checkbox` - show the checkbox to show the thumbnails close to the geotag mark
 * `with_categories_filter`- draw a dropdown allowing to select one category at a time
-* `with_tip_info` - show a tip explaining how to deal with the map (use it only if you think your users are dumb!) :D
+* `with_tip_info` - show a tip explaining how to deal with the map 
 
 
 
@@ -95,7 +95,7 @@ Because OpenLayers does not support it builtin in version 5. In version 3, there
 ![Interactive Map with thumbnails on frontend screenshot-5.jpg](https://ps.w.org/geotagged-media/assets/screenshot-5.jpg)
 
 ### 6. Interactive map on dashboard with thumbnails screenshot-6.jpg
-[missing image]
+![Interactive map on dashboard with thumbnails screenshot-6.jpg](https://ps.w.org/geotagged-media/assets/screenshot-6.jpg)
 
 
 

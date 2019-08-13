@@ -5,7 +5,7 @@
  * Plugin URI: https://github.com/digfish/geotagged-media
  * Author: digfish
  * Author URI: https://github.com/digfish
- * Version: 0.2.5
+ * Version: 0.3.0
  * License: GPL2
  * Text Domain: gtm
  * Domain Path: digfish/gtm

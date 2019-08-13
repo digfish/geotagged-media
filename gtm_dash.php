@@ -272,7 +272,6 @@ function gtm_settings_admin_page()
     }
 
     update_user_meta(get_current_user_id(), 'gtm_first_configure', true);
-    $gtm_options['key_mapbox'] = 'pk.eyJ1IjoiZGlnZmlzaCIsImEiOiJjanlycmt4b2QwZDcxM2JxeXhkcmQxaThrIn0.XgtlZb4MK9_kbMhwPI0qCw';
     require_once "gtm_settings_page.php";
 }
 
@@ -331,6 +330,10 @@ function gtm_admin_scripts($hook_suffix)
     wp_enqueue_script('bootstrap_js');
     wp_enqueue_script('mustache_js');
     wp_enqueue_script('leaflet_js');
+
+    wp_enqueue_script( 'jquery-ui-dialog' );
+    wp_enqueue_style( 'wp-jquery-ui-dialog');
+    
     wp_enqueue_script('gtm_js');
  //   wp_enqueue_script('gtm_geomap_js');
 	wp_enqueue_script('gtm_geomap_leaflet_js');
