@@ -75,9 +75,9 @@ function gtmOverlayModalUrl(url) {
 
 function initDismissableButtonAction() {
 
-    $(document).on('click', '#gtm_activation_notice .notice-dismiss', function (evt) {
+    jQuery(document).on('click', '#gtm_activation_notice .notice-dismiss', function (evt) {
         console.log('Clicked dismiss!');
-        $.get(ajaxurl + "?action=dismiss_activation_notice")
+        jQuery.get(ajaxurl + "?action=dismiss_activation_notice")
             .success(function (response) {
                 console.log('dismisson_activation_notice', response);
             });
