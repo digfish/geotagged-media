@@ -594,9 +594,6 @@ function gtm_add_metadata_custom_column($column_name, $id)
         $buf = '';
         $all_md = wp_get_attachment_metadata($id);
         if (gtm_is_metadata_empty($all_md)) {
-            // FIXME after sucessfull manual geomark, the new geomarked photo is not showing as it in the media gallery
-            $url_geomark = "/notmpl/gtm_geomark?post_id=$id";
-            echo "<P><A href=\"javascript:gtmOverlayModalUrl('$url_geomark')\" target='_blank'>Click here to geotag this photo</A></P>";
         } else {
             $md = $all_md['image_meta'];
             if (!empty($md['camera'])) {
@@ -611,6 +608,10 @@ function gtm_add_metadata_custom_column($column_name, $id)
                 $long_dec = gtm_geo_dms2dec($md['longitude'], $md['longitude_ref']);
 
                 $buf .= gtm_gmaps_link($lat_dec, $long_dec);
+            } else {
+	            // FIXME after sucessfull manual geomark, the new geomarked photo is not showing as it in the media gallery
+	            $url_geomark = "/notmpl/gtm_geomark?post_id=$id";
+	            echo "<P><A href=\"javascript:gtmOverlayModalUrl('$url_geomark')\" target='_blank'>Click here to geotag this photo</A></P>";
             }
         }
 
