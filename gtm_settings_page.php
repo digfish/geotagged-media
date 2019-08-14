@@ -113,12 +113,13 @@
             jquim = jquiModal("gtmModalWaitDwnldComposer","<H4>Downloading composer, wait...</H4>");
             $.get(
                 ajaxurl + "?action=gtm_download_composer", {}).success(function (response) {
-                jquiClose(jquim);
-                console.log(response);
-                $('#download_composer_response').html(mst_render('#mst_simple_paragraph', {'text': response}));
-                $('#download_composer_response').show();
-                //$('#composer_init_section').trigger('init_vendor');
-                $('#composer_init_section').triggerHandler('click');
+                    jquiClose(jquim);
+                    console.log(response);
+                    $('#download_composer_response').html(mst_render('#mst_simple_paragraph', {'text': response}));
+                    $('#download_composer_response').show();
+                    //$('#composer_init_section').trigger('init_vendor');
+                    $('#composer_init_section').triggerHandler('click');
+                    $('#btn_download_composer').hide();
             });
 
         });
@@ -132,6 +133,7 @@
             $.get(ajaxurl + "?action=gtm_install_deps", {}).success(function (response) {
                 //              console.log(response);
                 jquiClose(jquim);
+                $('#btn_composer_init_vendor').hide();
                 $('#btn_composer_init_vendor').parent().append(mst_render('#mst_textarea_console', {'text': response}));
 
                 $('#btn_composer_init_vendor').parent().append(mst_render('#mst_simple_paragraph', {'text': "Dependencies installed with success!"}));
