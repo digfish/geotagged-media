@@ -73,6 +73,21 @@ function gtmOverlayModalUrl(url) {
     });
 }
 
+function moveToNewCenter(map, lat, long) {
+    console.log('moveToNewCenter', map, lat, long);
+    var res = map.getView().getResolution();
+    var coordinates = [parseFloat(long), parseFloat(lat)];
+    var projected = ol.proj.fromLonLat(coordinates);
+    var view = map.getView();
+    console.log('view', view);
+    console.log('getLayers', map.getLayers());
+    view.animate({
+        center: projected,
+        duration: 50
+    });
+}
+
+
 function initDismissableButtonAction() {
 
     jQuery(document).on('click', '#gtm_activation_notice .notice-dismiss', function (evt) {

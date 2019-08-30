@@ -3,6 +3,7 @@
 require_once "vendor/autoload.php";
 
 use Geocoder\Provider\Nominatim\Nominatim;
+use Geocoder\Query\GeocodeQuery;
 use Geocoder\Query\ReverseQuery;
 use Geocoder\StatefulGeocoder;
 use Http\Adapter\Guzzle6\Client;
@@ -36,4 +37,27 @@ function gtm_revgeocode($coord_r) {
 	$revgeocode_cache[$cache_key] = $displayName;
 	set_transient(GTM_TEXT_DOMAIN.'_revgeocode',$revgeocode_cache, WEEK_IN_SECONDS);
 	return $displayName;
+}
+
+function gtm_geocode( $geoname ) {
+
+	$httpClient = new Client();
+	$provider   = new Nominatim( $httpClient, 'https://nominatim.openstreetmap.org/', 'nominatim-client' );
+	$geocoder   = new StatefulGeocoder( $provider, 'en' );
+
+	$geocode_result = $geocoder->geocodeQuery( GeocodeQuery::create( $geoname ) );
+	$results        = $geocode_result->all();
+//	print_r($results[0]);
+	$results = array_map( function ( $result ) {
+		return array(
+			'name'       => $result->getDisplayName(),
+			'latitude'   => $result->getCoordinates()->getLatitude(),
+			'longitude'  => $result->getCoordinates()->getLongitude(),
+			'streetName' => $result->getStreetName(),
+			'locality'   => $result->getLocality(),
+			'country'    => $result->getCountry()->getName()
+		);
+	}, $results );
+
+	return $results;
 }

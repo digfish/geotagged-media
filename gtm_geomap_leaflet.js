@@ -107,11 +107,22 @@ var GtmGeomap = function (selector,library) {
         geoMap.mapContainerId = mapContainerId;
         grabMapSourceKeys().then(function(statusMsg)
         {
+            noPointData = false;
             // set leaflet with latitude, longitude and zoom level
             geoMap = $('#map').data('map');
             console.log('geoMap inside=>',geoMap );
-            point = [data[1],data[0]];
-            geoMap.map = L.map(geoMap.mapContainerId).setView( point, 13);
+            if (data == "") { // no coordinates !
+                noPointData = true;
+                point = [0.0, 0.0]
+            } else {
+                noPointData = false;
+                point = [data[1], data[0]];
+            }
+            if (noPointData === true) {
+                geoMap.map = L.map(geoMap.mapContainerId).setView(point, 1);
+            } else {
+                geoMap.map = L.map(geoMap.mapContainerId).setView(point, 13);
+            }
             console.log("accessing keys inside closure",geoMap.keys);
             L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}',
                 {

@@ -89,6 +89,7 @@ function gtm_frontend_scripts( $hook_suffix ) {
 	wp_enqueue_script( 'jquery-ui-widget', '', array( 'jquery-ui-core' ), false, false );
 	wp_enqueue_script( 'jquery-ui-tooltip', '', array( 'jquery-ui-widget' ), false, false );
 	wp_enqueue_script( 'jquery-ui-dialog', '', array( 'jquery-ui-widget' ), false, false );
+	wp_enqueue_script( 'jquery-ui-autocomplete', '', array( 'jquery-ui-widget' ), false, false );
 
 	wp_add_inline_script( 'jquery-ui-tooltip', 'jQuery.widget.bridge(\'uitooltip\', jQuery.ui.tooltip);' );
 

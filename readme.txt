@@ -13,7 +13,7 @@ Geotagged Media shows the location of your photos in a map on the Dashboard.
 
 == Description ==
 
-This plugin allows to show the location of your photos on map, if they were geotagged (i.e., they contain an EXIF tag with the geocoordinates). 
+This plugin allows to show the location of your photos on map, if they were geotagged (i.e., they contain an EXIF tag with the geocoordinates).
 Through a shortcode you can insert zoomable maps in your posts grouping your pictures in categories and tags (it enables taxonomies for media on activation).
 It uses the [OpenLayers JS Library](https://openlayers.org/) to render the points in a [OpenStreetMap](https://www.openstreetmap.org/). Clicking on the points will show a popup with a thumbnail. Clicking in it will open the 'Edit Image' for that particular photo
 Besides the maps, it adds a 'metadata' column to the Media Listing table with the coordinates and the camera which took the photo. In the 'Edit Media' and 'Attachment Details' views adds fields with the coordinates and camera metadata values.
@@ -53,7 +53,7 @@ The four arguments below accept a `yes` (or `true`) or `no` (`false`) value. if 
 * `with_source_maps_selector` - draw the radio buttons allowing to select the desire the map source, one at a time -
 * `with_thumbnail_checkbox` - show the checkbox to show the thumbnails close to the geotag mark
 * `with_categories_filter`- draw a dropdown allowing to select one category at a time
-* `with_tip_info` - show a tip explaining how to deal with the map 
+* `with_tip_info` - show a tip explaining how to deal with the map
 
 
 = My photos from my camera are surely geotagged, why they don't appear as such in Wordpress ? =
@@ -77,6 +77,9 @@ Because OpenLayers does not support it builtin in version 5. In version 3, there
 6. Interactive map on dashboard with thumbnails screenshot-6.jpg
 
 == Changelog ==
+
+= 0.3.1 =
+* Implemented search box for frontend maps
 
 = 0.3.0 =
 * Implemented categories and tags for Media
@@ -114,10 +117,11 @@ First version. Not applicable.
 
 == TODO ==
 
+* Search box in dashboard maps
+* Map also in the frontend attachment page for the image, besides the backoffice (not important!)
 * Two or more maps in the same HTML stream does not work properly (need to replace HTML id's with classes)
+* The geomarking feature on the media library in list view only allow to geomark one item (the page must be refreshed to enable again the modal view for geomarking)
 * The providers maps keys should stay on server and not be send to the client
-* Geomark manually must be done in a modal overlay instead of a new page (done for media list view)
-
 * Add an overlay icon to each photo in media library in grid mode
 * Filter on Media Library by if have metadata fields for camera or geolocation (partially done, not using camera)
 * Use [Leaflet Map Visualization Library](https://leafletjs.com/) on mobile devices instead of OpenLayers (being used in Edit Media Details page)

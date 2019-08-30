@@ -51,8 +51,12 @@ function gtm_extract_geodata_from_post($posts)
             $media_dir = wp_upload_dir();
             $media_dir = $media_dir['basedir'];
             if (!file_exists($media_dir . "/$thumbnail_filename")) {
-                $thumbnail_filename = null;
+	            $thumbnail_filename = '';
             }
+        } else {
+	        debug( $post->post_title . "has no thumb!" );
+	        $thumbnail_filename = 'no-picture.jpg';
+
         }
 
         return array(

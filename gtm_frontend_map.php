@@ -51,7 +51,7 @@ $categories = gtm_category_names_for_geotagged_photos();
 
 <?php
 if ( !empty($tags)) {
-    echo "<input id='tags'type='hidden' name='tags' value='$tags'>";
+	echo "<input id='tags' type='hidden' name='tags' value='$tags'>";
 }
 ?>
 
@@ -62,11 +62,57 @@ if ( !empty($tags)) {
         Clicking on the thumbnail inside the popup will take you to the 'Edit Photo' view.</P>
 <?php endif ?>
 
+<label>Map search
+    <input id="map_search" type="text" name="geoname_search" style="width: 400px"
+           placeholder="Input place name, street, etc...">
+</label>
+
 <div id="map" class="gtm-map">
 </div>
 <div style="display:none" id="popup_wrapper">
     <!-- Popup in which the point details appears when clicking -->
     <div id="popup" class="popup" title="Here is:"></div>
 </div>
+<script type="text/javascript">
 
+    jQuery(function () {
+        jQuery('#map_search').autocomplete({
+            source: function (request, response) {
+                console.log('map search autocomplete!', request, response);
+                jQuery.getJSON(
+                    ajaxurl + "?action=geocode_search",
+                    {geoname: jQuery('#map_search').val()},
+                    response
+                );
+                console.log(response);
+            },
+            select: function (evt, ui) {
+
+                evt.preventDefault();
+                var input = jQuery(evt.target);
+                console.log('select', evt, ui);
+                console.log('selected', ui.item.name);
+                jQuery(input).attr('value', ui.item.name);
+                jQuery(input).attr('lat', ui.item.lat);
+                jQuery(input).attr('long', ui.item.long);
+                console.log('input', input, jQuery(input).attr('lat'));
+                moveToNewCenter(jQuery('#map').data('map'), input.attr('lat'), input.attr('long'));
+                return false;
+            },
+            response: function (evt, ui) {
+                console.log('response', evt, ui);
+                jQuery(this).data('ui-autocomplete')._renderItem = function (ul, item) {
+                    newLink = jQuery('<a>' + item.name + '</a>');
+                    newListItem = jQuery('<li>').attr('lat', item.lat);
+                    jQuery(newListItem).attr('long', item.long);
+                    //jQuery(newListItem).data('item',item);
+                    return jQuery(newListItem)
+                        .append(newLink)
+                        .appendTo(ul);
+                };
+            }
+        });
+    })
+    ;
+</script>
 

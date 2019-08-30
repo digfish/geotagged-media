@@ -464,4 +464,6 @@ jQuery(document).ready(function ($) {
             $(popupElement).popover('show');
         });
     }
+
+
 });

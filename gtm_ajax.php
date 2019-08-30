@@ -1,6 +1,6 @@
 <?php
 
-
+require_once "gtm_geocode_lib.php";
 
 // this code called directly without using the 'heartbeat' define on wpajaxurl
 
@@ -128,7 +128,7 @@ add_action('wp_ajax_gtm_geomark', function () {
 add_action('wp_ajax_getcoord', function () {
     header('Content-type: application/json');
     $image_md = wp_get_attachment_metadata($_REQUEST['post_id']);
-    if (empty($image_md['image_meta'])) {
+	if ( empty( $image_md['image_meta']['latitude'] ) ) {
         echo json_encode('');
     } else {
         $md = $image_md['image_meta'];
@@ -141,3 +141,17 @@ add_action('wp_ajax_getcoord', function () {
 });
 
 
+add_action( 'wp_ajax_geocode_search', function () {
+	header( 'Content-type: application/json' );
+	$geoname = $_REQUEST['geoname'];
+	$results = gtm_geocode( $geoname );
+	$names   = array_map( function ( $result ) {
+		return array(
+			'name' => $result['name'],
+			'lat'  => $result['latitude'],
+			'long' => $result['longitude']
+		);
+	}, $results );
+	echo json_encode( $names );
+	wp_die();
+} );
