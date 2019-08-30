@@ -78,6 +78,9 @@ Because OpenLayers does not support it builtin in version 5. In version 3, there
 
 == Changelog ==
 
+= 0.3.2 =
+* Search box in the Tagged media page in the dashboard
+
 = 0.3.1 =
 * Implemented search box for frontend maps
 
@@ -117,7 +120,6 @@ First version. Not applicable.
 
 == TODO ==
 
-* Search box in dashboard maps
 * Map also in the frontend attachment page for the image, besides the backoffice (not important!)
 * Two or more maps in the same HTML stream does not work properly (need to replace HTML id's with classes)
 * The geomarking feature on the media library in list view only allow to geomark one item (the page must be refreshed to enable again the modal view for geomarking)

@@ -34,7 +34,10 @@ $categories = gtm_category_names_for_geotagged_photos();
 </div>
 <P id='gtm-media-info'>Please wait while the map with the points for the geocoded media loads...</P>
 <P class="gtm-highlight" style="display:none">Click on every square to show a popup with a thumbnail for the photo. Clicking on the thumbnail inside the popup will take you to the 'Edit Photo' view.</P>
-
+<label>Map search
+    <input id="map_search" type="text" name="geoname_search" style="width: 400px"
+           placeholder="Input place name, street, etc...">
+</label>
 
 <div id="map" class="gtm-map">
 </div>
@@ -44,3 +47,46 @@ $categories = gtm_category_names_for_geotagged_photos();
 </div>
 
 
+<script type="text/javascript">
+
+    jQuery(document).ready(function ($) {
+
+        $('#map_search').autocomplete({
+            source: function (request, response) {
+                console.log('map search autocomplete!', request, response);
+                $.getJSON(
+                    ajaxurl + "?action=geocode_search",
+                    {geoname: $('#map_search').val()},
+                    response
+                );
+                console.log(response);
+            },
+            select: function (evt, ui) {
+
+                evt.preventDefault();
+                var input = $(evt.target);
+                console.log('select', evt, ui);
+                console.log('selected', ui.item.name);
+                $(input).attr('value', ui.item.name);
+                $(input).attr('lat', ui.item.lat);
+                $(input).attr('long', ui.item.long);
+                console.log('input', input, $(input).attr('lat'));
+                moveToNewCenter($('#map').data('map'), input.attr('lat'), input.attr('long'));
+                return false;
+            },
+            response: function (evt, ui) {
+                console.log('response', evt, ui);
+                $(this).data('ui-autocomplete')._renderItem = function (ul, item) {
+                    newLink = $('<a>' + item.name + '</a>');
+                    newListItem = $('<li>').attr('lat', item.lat);
+                    $(newListItem).attr('long', item.long);
+                    //$(newListItem).data('item',item);
+                    return $(newListItem)
+                        .append(newLink)
+                        .appendTo(ul);
+                };
+            }
+        });
+    })
+    ;
+</script>

@@ -332,6 +332,8 @@ function gtm_admin_scripts($hook_suffix)
     wp_enqueue_script('leaflet_js');
 
     wp_enqueue_script( 'jquery-ui-dialog' );
+	wp_enqueue_script( 'jquery-ui-autocomplete' );
+
     wp_enqueue_style( 'wp-jquery-ui-dialog');
     
     wp_enqueue_script('gtm_js');
@@ -372,7 +374,7 @@ function gtm_dash_callback()
     }
     switch ($action) {
         case 'render_geotags':
-            require_once "gtm_tagged_media_map_page.php";
+	        require_once "gtm_tagged_media_map.php";
             break;
         case 'marknew':
             require_once "gtm_geomark.php";
